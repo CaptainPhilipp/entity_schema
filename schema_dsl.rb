@@ -3,30 +3,35 @@
 require 'dry/core/class_builder'
 
 module EntitySchema
-  # TODO: doc
-  module SchemaDSL
+  # allow to define schema in `schema do` block
+  module SchemaDsl
+    # @example
+    #   schema do
+    #     property :foo
+    #     property :bar
+    #   end
     def schema(_opts = {})
       return @schema unless block_given?
 
-      @schema        ||= Schema.new(self)
-      @schema_klass_ ||= Class.new.tap do |klass|
-        klass.extend SchemaBuildingDSL
-        klass.schema = @schema
+      @schema_builder_klass_ ||= Class.new.tap do |klass|
+        klass.extend SchemaBuildingDsl
+        @schema = klass.schema
       end
 
-      @schema_klass_.class_eval { yield }
+      @schema_builder_klass_.class_eval { yield }
       @schema
     end
 
+    # freeze schema and define readers and writers
     def finalize!
       return if @finalized_
       @finalized_ = true
 
       schema.freeze
-      schema.resolvers_list.each do |resolver|
-        name = resolver.name
-        define_method(name) { resolver.public_get(attributes) } if resolver.public_get?
-        define_method(:"#{name}=") { |v| resolver.public_set(attributes, v) } if resolver.public_set?
+      schema.fields_list.each do |field|
+        name = field.name
+        define_method(name) { field.public_get(@attributes, @objects) } if field.public_get?
+        define_method(:"#{name}=") { |v| field.public_set(@attributes, @objects, v) } if field.public_set?
       end
     end
   end

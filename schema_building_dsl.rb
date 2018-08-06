@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  # TODO: doc
-  module SchemaBuildingDSL
-    attr_writer :schema
-
+  # class-level methods for define schema
+  module SchemaBuildingDsl
     def schema
       @schema ||= Schema.new(self)
     end
 
     def property(name, key: name, hidden: false, setter: !hidden, getter: !hidden)
-      schema.public_set name, Property.new(self, name, opts(key, setter, getter, hidden, mapper))
+      schema.add_field name, Property.new(self, name, opts(key, setter, getter, hidden, mapper))
     end
 
     def property?(name, key: name, setter: true); end
@@ -20,16 +18,16 @@ module EntitySchema
     def belongs_to(obj_name, fk_name = nil, obj_pk_name = nil, **_opts)
       fk, pk = fk__pk(name, fk_name, obj_pk_name)
 
-      belong_fk     = Resolvers::FkBelongsTo.new
-      belong_object = Resolvers::ObjectBelongsTo.new
+      fk_belongs_to     = Fields::FkBelongsTo.new
+      object_belongs_to = Fields::ObjectBelongsTo.new
 
-      observer = Resolvers::ObserverBelongsTo.new(belong_fk, belong_object, pkey: pk)
+      observer = Fields::ObserverBelongsTo.new(fk_belongs_to, object_belongs_to, object_pk: pk)
 
-      belong_fk.belong_observer     = observer
-      belong_object.belong_observer = observer
+      fk_belongs_to.observer_belongs_to     = observer
+      object_belongs_to.observer_belongs_to = observer
 
-      schema.add_resolver(fk, belong_fk)
-      schema.add_resolver(obj_name, belong_object)
+      schema.add_field(fk, fk_belongs_to)
+      schema.add_field(obj_name, object_belongs_to)
     end
 
     # rubocop:disable Naming/PredicateName
@@ -49,14 +47,12 @@ module EntitySchema
     def fk__pk(name, fk, pk)
       if fk.nil? && pk.nil?
         [:"#{name}_id", :id]
-      elsif fk && pk
-        [fk, pk]
       elsif fk.is_a?(Hash) && fk.size == 1
         fk.to_a.first
       else
         raise ArgumentError, "Possible overloads: \n" \
-              "belongs_to :foo, :foo_uid, :uid, ...\n" \
-              "belongs_to :foo, { foo_uid: :uid }, ...\n" \
+                             "belongs_to :foo, { foo_uid: :uid }, ...\n" \
+                             "belongs_to :foo, ...\n" \
       end
     end
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity

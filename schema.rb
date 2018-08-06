@@ -1,58 +1,76 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  # Interface for build and usage schema
+  # Interface for build and use schema
   class Schema
-    attr_reader :owner
+    attr_reader :owner, :object_fields
 
     def initialize(owner)
-      @owner     = owner
-      @resolvers = {}
+      @owner = owner
+      @fields = {}
+      @object_fields = []
     end
 
-    def add_resolver(name, resolver)
-      resolvers[name] = resolver
+    def extends(src)
+      schema  = extract_schema(input)
+      @fields = schema.fields.merge(fields)
+    end
+
+    def add_field(name, field)
+      fields[name] = field
+    end
+
+    def add_object_field(name, field)
+      @object_fields << field
+      add_field(name, field)
     end
 
     def freeze
-      resolvers.each do |name, resolver|
+      fields.each do |name, field|
         name.freeze
-        resolver.freeze
+        field.freeze
       end
 
-      resolvers.freeze
+      fields.freeze
       super
     end
 
-    def get(attributes, name, default: Undefined)
-      raise_unknown_resolver(name) unless resolver?(name)
+    def get(attributes, objects, name)
+      raise_unknown_field(name) unless field?(name)
 
-      resolvers[name].public_get(attributes, default: default)
+      fields[name].public_get(attributes, objects)
     end
 
-    def set(attributes, name, value)
-      raise_unknown_resolver(name) unless resolver?(name)
+    def set(attributes, objects, name, value)
+      raise_unknown_field(name) unless field?(name)
 
-      resolvers[name].public_set(attributes, value)
+      fields[name].public_set(attributes, objects, value)
     end
 
-    def resolvers_list
-      resolvers.values
+    def fields_list
+      fields.values
     end
 
-    def resolver?(name)
-      resolvers.key?(name)
+    def field?(name)
+      fields.key?(name)
     end
 
     def names
-      resolvers.keys
+      fields.keys
     end
 
     private
 
-    attr_reader :resolvers
+    attr_reader :fields
 
-    def raise_unknown_resolver(name)
+    def extract_schema(input)
+      case input
+      when self.class                 then input
+      when input.respond_to?(:schema) then input.schema
+      end
+    end
+
+    def raise_unknown_field(name)
       raise "Unknown attribute `#{name}`"
     end
   end
@@ -73,8 +91,4 @@ class Product
   has_many   :prices,                     map_to: Prices
   has_many   :seasons,                    map_to: Season
   has_many   :materials_products,         map_to: MaterialsProduct
-
-  def to_h
-    unwrap_objects(:to_h, seasons: :serializable_hash).to_h
-  end
 end

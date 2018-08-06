@@ -5,27 +5,28 @@ require 'dry/core/class_builder'
 module EntitySchema
   # TODO: doc
   module EntityMixin
-    attr_reader :attributes
-
     def initialize(params)
       self.class.finalize!
-      @attributes = self.class.schema.slice(params)
+      @attributes = params.slice(*self.class.schema.names)
+      @objects    = {}
     end
 
     def [](key)
-      self.class.schema.public_get(attributes, key)
-    end
-
-    def fetch(key, default = Undefined)
-      self.class.schema.public_get(attributes, key, default: default)
+      self.class.schema.get(@attributes, @objects, key)
     end
 
     def []=(key, value)
-      self.class.schema.public_set(attributes, key, value)
+      self.class.schema.set(@attributes, @objects, key, value)
     end
 
-    def key?(key)
-      self.class.schema.key?(key)
+    def key?(name)
+      self.class.schema.field?(name)
+    end
+
+    def to_h
+      @attributes.dup.tap do |output|
+        self.class.schema.object_fields.each { |f| f.serialize(output, @objects) }
+      end
     end
   end
 end
