@@ -2,8 +2,8 @@
 
 module EntitySchema
   module Resolvers
-    # Base resolver
-    class Base
+    # Abstract resolver
+    class Abstract
       def initialize(name, schema, **opts)
         @schema     =   schema
         @name       =   name.to_sym
@@ -35,11 +35,11 @@ module EntitySchema
       end
 
       def base_set(storage, value)
-        write(storage, value)
+        raise NotImplementedError
       end
 
       def base_get(storage)
-        read(storage)
+        raise NotImplementedError
       end
 
       private

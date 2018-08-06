@@ -3,7 +3,7 @@
 module EntitySchema
   module Resolvers
     # TODO: doc
-    class Predicate < Base
+    class Predicate < Abstract
       def base_set(storage, value)
         case value
         when true, false then write(storage, value)
@@ -13,7 +13,7 @@ module EntitySchema
       end
 
       def base_get(storage)
-        storage[src_key] ? true : false
+        read(storage) ? true : false
       end
     end
   end

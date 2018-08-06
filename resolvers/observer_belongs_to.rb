@@ -4,21 +4,22 @@ module EntitySchema
   module Resolvers
     # Fk
     class ObserverBelongsTo
-      attr_reader :fk_resolver, :object_resolver, :pkey
+      attr_reader :fk_resolver, :object_resolver, :pk
 
-      def initialize(belongs_to, belongs_to_object, pkey:)
+      def initialize(belongs_to, belongs_to_object, pk:)
         @fk_resolver     = belongs_to
         @object_resolver = belongs_to_object
-        @pkey            = pkey
+        @pk              = pk
       end
 
       def fk_changed(new_fk, storage)
-        return if object_resolver.base_get(storage)&.public_send(pkey) == new_fk
-        object_resolver.base_set(storage, nil, notify: false)
+        object    = object_resolver.base_get(storage)
+        object_pk = object&.public_send(pk)
+        object_resolver.base_set(storage, nil, notify: false) if object_pk != new_fk
       end
 
       def object_changed(new_object, storage)
-        fk_resolver.base_set(storage, new_object.public_send(pkey), notify: false)
+        fk_resolver.base_set(storage, new_object.public_send(pk), notify: false)
       end
     end
   end

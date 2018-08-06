@@ -3,7 +3,7 @@
 module EntitySchema
   module Resolvers
     # Withoutfk
-    class ObjectBelongsTo < Base
+    class ObjectBelongsTo < Resolvers::Object
       attr_accessor :belong_observer
 
       def base_set(storage, _value, notify: true)

@@ -3,7 +3,7 @@
 module EntitySchema
   module Resolvers
     # TODO: doc
-    class Object < Base
+    class Object < Abstract
       def base_set(storage, value)
         case value
         when map_to then write(storage, value)
