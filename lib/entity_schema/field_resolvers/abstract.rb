@@ -74,8 +74,7 @@ module EntitySchema
       end
 
       def raise_disabled(subject:)
-        raise NoMethodError,
-              "#{subject} disabled for property `##{name}` in #{schema.owner}'s schema '#{schema.full_name}'"
+        raise NoMethodError, "#{subject} disabled for field `#{name}` in `#{schema.owner}`"
       end
     end
   end

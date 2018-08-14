@@ -65,7 +65,7 @@ module EntitySchema
     end
 
     def given?(attributes, objects, name)
-      raise "Unknown field '#{name}'" unless field?(name)
+      raise "Unknown field '#{name}' for `#{owner}`" unless field?(name)
       fields[name].given?(attributes, objects)
     end
 
