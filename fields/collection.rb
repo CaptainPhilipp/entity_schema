@@ -3,34 +3,42 @@
 module EntitySchema
   module Fields
     # TODO: doc
-    class Collection < Abstract
+    class Collection < Object
+      # TODO: collection object, и в него перенаправить сеттер
       # mapped tuple must be only in `objects` hash
       def base_set(attributes, objects, values)
-        delete(attributes)
-        write(objects, wrap(values))
+        value = values.first
+        case value
+        when map_to
+          delete(attributes)
+          write(objects, values)
+        when Hash
+          delete(objects)
+          write(attributes, values)
+        else raise ArumentError, "Value (#{value}) should be `#{map_to}` or `Hash`"
+        end
       end
 
-      # mapped tuple must be only in `objects` hash
-      # prioritized operation - read once. in this case #delete will be called each time
       def base_get(attributes, objects)
-        values = delete(attributes)
-        values.nil? ? read(objects) : write(objects, wrap(values))
+        tuple = delete(attributes)
+        tuple.nil? ? read(objects) : write(objects, map(tuple))
       end
 
       def serialize(output, objects)
-        return unless exist?(objects)
         write(output, read(objects).map { |obj| obj.public_send(serialize_method) })
       end
 
       private
 
-      def wrap(values)
-        case values.first
-        when map_to then values
-        when Hash   then values.map { |value| map_to.public_send(map_method, value) }
-        when nil    then nil_filler
-        else raise "Unexpected `#{name}` value type #{value.class}"
-        end
+      attr_reader :serialize_method
+
+      def configure(params)
+        @serialize_method = params.delete(:serialize) || :to_h
+        super
+      end
+
+      def map(tuples)
+        tuples.map { |tuple| map_to.public_send(map_method, tuple) }
       end
 
       def delete(attributes)

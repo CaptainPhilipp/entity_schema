@@ -7,10 +7,13 @@ module EntitySchema
       @schema ||= Schema.new(self)
     end
 
+    # TODO: specification вместо просто хеша параметров
+    # TODO: билдер вместо простого создания инлайн
     def property(name, key: name, hidden: false, setter: !hidden, getter: !hidden)
       schema.add_field name, Property.new(self, name, opts(key, setter, getter, hidden, mapper))
     end
 
+    # TODO: method_name
     def property?(name, key: name, setter: true); end
 
     def object(name, **opts); end
@@ -36,9 +39,9 @@ module EntitySchema
     def has_many(name, **opts); end
     # rubocop:enable Naming/PredicateName
 
-    def timestamps
-      property :created_at, setter: false
-      property :updated_at, setter: false
+    def timestamps(setter: false)
+      property :created_at, setter: setter
+      property :updated_at, setter: setter
     end
 
     private
@@ -63,23 +66,23 @@ module EntitySchema
   end
 end
 
-# class Product
-#   property  :id
-#   property  :article
-#   property  :enabled
-#   property? :new,        key: :is_new
-#   property? :sale,       key: :is_sale
-#   property? :bestseller, key: :is_bestseller
-#   timestamps
+class Product
+  property  :id
+  property  :article
+  property  :enabled
+  property  :new?,        key: :is_new
+  property  :sale?,       key: :is_sale
+  property  :bestseller?, key: :is_bestseller
+  timestamps
 
-#   object :size, map_to: Size
+  object :size, map_to: Size
 
-#   belongs_to :color, { color_uid: :uid }, map_to: Color
-#   has_many   :prices,                     map_to: Prices
-#   has_many   :seasons,                    map_to: Season
-#   has_many   :materials_products,         map_to: MaterialsProduct
+  belongs_to :color, { color_uid: :uid }, map_to: Color
+  has_many   :prices,                     map_to: Prices
+  has_many   :seasons,                    map_to: Season
+  has_many   :materials_products,         map_to: MaterialsProduct
 
-#   def to_h
-#     properties.unwrap_objects(:to_h, seasons: :serializable_hash).to_h
-#   end
-# end
+  def to_h
+    properties.unwrap_objects(:to_h, seasons: :serializable_hash).to_h
+  end
+end

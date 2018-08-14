@@ -1,19 +1,18 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  # Interface for build and use schema
+  # aggregate of field resolvers
   class Schema
     attr_reader :owner, :object_fields
 
     def initialize(owner)
       @owner = owner
       @fields = {}
-      @object_fields = []
+      @object_fields = {}
     end
 
     def extends(src)
-      schema  = extract_schema(input)
-      @fields = schema.fields.merge(fields)
+      @fields = extract_schema(src).fields.merge(fields)
     end
 
     def add_field(name, field)
@@ -21,7 +20,7 @@ module EntitySchema
     end
 
     def add_object_field(name, field)
-      @object_fields << field
+      @object_fields[name] = field
       add_field(name, field)
     end
 
@@ -47,12 +46,27 @@ module EntitySchema
       fields[name].public_set(attributes, objects, value)
     end
 
+    def serialize(attributes, objects)
+      output = {}
+      attributes.dup.tap do |output|
+        objects.each_key do |key|
+          self.class.schema.object_fields[key].serialize(output, objects)
+        end
+      end
+      output
+    end
+
     def fields_list
       fields.values
     end
 
     def field?(name)
       fields.key?(name)
+    end
+
+    def given?(attributes, objects, name)
+      raise "Unknown field '#{name}'" unless field?(name)
+      fields[name].given?(attributes, objects)
     end
 
     def names
@@ -67,6 +81,7 @@ module EntitySchema
       case input
       when self.class                 then input
       when input.respond_to?(:schema) then input.schema
+      else raise ArgumentError
       end
     end
 

@@ -3,6 +3,7 @@
 require 'dry/core/class_builder'
 
 module EntitySchema
+  # TODO: дистилировать ответственность сущности и переименовать
   # allow to define schema in `schema do` block
   module SchemaDsl
     # @example
@@ -28,6 +29,7 @@ module EntitySchema
       @finalized_ = true
 
       schema.freeze
+      # TODO: define predicates
       schema.fields_list.each do |field|
         name = field.name
         define_method(name) { field.public_get(@attributes, @objects) } if field.public_get?

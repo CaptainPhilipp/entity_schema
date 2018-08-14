@@ -4,10 +4,10 @@ module EntitySchema
   module Fields
     # Abstract field
     class Abstract
-      def initialize(name, schema, **opts)
-        @schema = schema
+      def initialize(name, schema, **params)
         @name   = name.to_sym
-        configure(opts)
+        @schema = schema
+        configure(params)
       end
 
       def public_set(attributes, objects, value)
@@ -36,18 +36,25 @@ module EntitySchema
         @public_get
       end
 
+      def given?(*storages)
+        storages.all? { |storage| storage.key? src_key }
+      end
+
       private
 
-      attr_reader :schema, :name, :src_key, :nil_filler, :serialize_method
+      attr_reader :schema, :name, :src_key, :serialize_method
 
-      def configure(opts)
-        @src_key    =   opts.delete(:key)&.to_sym || @name
-        is_private  =  !opts.delete(:private)
-        @public_set = !!opts.delete(:setter) || !is_private
-        @public_get = !!opts.delete(:getter) || !is_private
-        @nil_filler =   opts.delete(:nil_filler)
-        @serialize_method = opts.delete(:serialize)
-        raise "Unknown options given: #{opts.inspect}" if opts.any?
+      def configure(params)
+        private_    = to_bool(params.delete(:private))
+        @public_set = to_bool(params.delete(:setter)) || !private_
+        @public_get = to_bool(params.delete(:getter)) || !private_
+        @src_key    = params.delete(:key)&.to_sym || @name
+
+        raise "Unknown options given: #{params.inspect}" if params.any?
+      end
+
+      def to_bool(value)
+        value ? true : false
       end
 
       def guard_public_set
@@ -64,10 +71,6 @@ module EntitySchema
 
       def write(storage, value)
         storage[src_key] = value
-      end
-
-      def exist?(storage)
-        storage.key? src_key
       end
 
       def raise_disabled(subject:)
