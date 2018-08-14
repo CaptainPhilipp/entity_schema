@@ -5,9 +5,7 @@ module EntitySchema
     # Abstract field
     module Builders
       class BuildBelongsTo
-        def call()
-
-        end
+        def call; end
       end
     end
   end

@@ -40,8 +40,6 @@ module EntitySchema
     end
 
     private
-
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
     def fk__pk(name, fk, pk)
       if fk.nil? && pk.nil?
         [:"#{name}_id", :id]
