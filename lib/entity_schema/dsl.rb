@@ -2,19 +2,18 @@
 
 module EntitySchema
   # class-level methods for define schema
-  module SchemaDsl
+  module Dsl
     # TODO: specification вместо просто хеша параметров
     # TODO: билдер вместо простого создания инлайн
     def property(name, key: name, hidden: false, setter: !hidden, getter: !hidden)
+      # TODO: schema.add_field Builders::Property.call(...)
       schema.add_field name, Property.new(self, name, opts(key, setter, getter, hidden, mapper))
     end
-
-    # TODO: method_name
-    def property?(name, key: name, setter: true); end
 
     def object(name, **opts); end
 
     def belongs_to(obj_name, fk_name = nil, obj_pk_name = nil, **_opts)
+      # TODO: Builders::BelongsTo
       fk, pk = fk__pk(name, fk_name, obj_pk_name)
 
       fk_belongs_to     = FieldResolvers::FkBelongsTo.new
