@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  module Fields
+  module FieldResolvers
     # TODO: doc
     class Collection < Object
       # TODO: collection object, и в него перенаправить сеттер

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  module Fields
+  module FieldResolvers
     # Fk
     class ObserverBelongsTo
       attr_reader :fk_field, :object_field, :pk

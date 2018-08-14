@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  module Fields
+  module FieldResolvers
     # TODO: doc
     class Property < Abstract
       def base_set(attributes, _objects, value)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  module Fields
+  module FieldResolvers
     # Abstract field
     class Abstract
       def initialize(name, schema, **params)

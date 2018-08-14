@@ -21,10 +21,10 @@ module EntitySchema
     def belongs_to(obj_name, fk_name = nil, obj_pk_name = nil, **_opts)
       fk, pk = fk__pk(name, fk_name, obj_pk_name)
 
-      fk_belongs_to     = Fields::FkBelongsTo.new
-      object_belongs_to = Fields::ObjectBelongsTo.new
+      fk_belongs_to     = FieldResolvers::FkBelongsTo.new
+      object_belongs_to = FieldResolvers::ObjectBelongsTo.new
 
-      observer = Fields::ObserverBelongsTo.new(fk_belongs_to, object_belongs_to, object_pk: pk)
+      observer = FieldResolvers::ObserverBelongsTo.new(fk_belongs_to, object_belongs_to, object_pk: pk)
 
       fk_belongs_to.observer_belongs_to     = observer
       object_belongs_to.observer_belongs_to = observer
