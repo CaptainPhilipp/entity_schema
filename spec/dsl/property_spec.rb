@@ -10,11 +10,13 @@ RSpec.describe 'EntitySchema.property()' do
       end
 
       property  :property
-      property  :property_name, key: :property_key
-      property  :ungettable, getter: false
-      property  :unsettable, setter: false
-      property  :hidden,     hidden: true
-      property  :privat,     private: true
+      property  :property_name,  key: :property_key
+      property  :ungettable,     getter: false
+      property  :unsettable,     setter: false
+      property  :private_setter, setter: :private
+      property  :private_getter, private_getter: true
+      property  :hidden,         hidden: true
+      property  :privat,         private: true
       property  :undefined
       property? :predicate
       property? :predicate_name, key: :predicate_key
@@ -23,15 +25,17 @@ RSpec.describe 'EntitySchema.property()' do
 
   let(:entity) do
     entity_klass.new(
-      property:      'property',
-      property_name: '-',
-      property_key:  'property_key',
-      ungettable:    'ungettable',
-      unsettable:    'unsettable',
-      privat:        'private',
-      hidden:        'hidden',
-      predicate:     true,
-      predicate_key: false
+      property:       'property',
+      property_name:  '-',
+      property_key:   'property_key',
+      ungettable:     'ungettable',
+      unsettable:     'unsettable',
+      privat:         'private',
+      private_getter: 'private_getter',
+      private_setter: 'private_setter',
+      hidden:         'hidden',
+      predicate:      true,
+      predicate_key:  false
     )
   end
 
@@ -73,6 +77,18 @@ RSpec.describe 'EntitySchema.property()' do
     it { expect { entity.unsettable   = 'changed' }.to raise_error(NoMethodError) }
     it { expect { entity[:unsettable] = 'changed' }.to raise_error(NameError, 'Setter disabled for field `unsettable` in `Entity`') }
     it { expect(entity.to_h[:unsettable]).to          eq 'unsettable' }
+  end
+
+  describe 'with `getter: :private` option' do
+    it { expect { entity.private_getter }.to     raise_error(NoMethodError) }
+    it { expect { entity[:private_getter] }.to   raise_error(NameError, 'Private Getter called for field `private_getter` in `Entity`') }
+    it { expect(entity.send(:private_getter)).to eq 'private_getter' }
+  end
+
+  describe 'with `setter: :private` option' do
+    it { expect { entity.private_setter   = 'changed' }.to      raise_error(NoMethodError) }
+    it { expect { entity[:private_setter] = 'changed' }.to      raise_error(NameError, 'Private Setter called for field `private_setter` in `Entity`') }
+    it { expect { entity.send(:private_setter=, 'changed') }.to change { entity.to_h[:private_setter] }.from('private_setter').to('changed') }
   end
 
   describe 'with `private: true` option' do
