@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'dry/core/class_builder'
-
 module EntitySchema
   # TODO: дистилировать ответственность сущности и переименовать
   # allow to define schema in `schema do` block
@@ -24,8 +22,8 @@ module EntitySchema
       # TODO: define predicates
       schema.fields_list.each do |field|
         name = field.name
-        define_method(name) { field.public_get(@attributes, @objects) } if field.public_get?
-        define_method(:"#{name}=") { |v| field.public_set(@attributes, @objects, v) } if field.public_set?
+        define_method(name) { field.public_get(@attributes_, @objects_) } if field.get_enabled?
+        define_method(:"#{name}=") { |v| field.public_set(@attributes_, @objects_, v) } if field.set_enabled?
       end
     end
   end

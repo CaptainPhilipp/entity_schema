@@ -4,7 +4,7 @@ module EntitySchema
   module FieldResolvers
     # Abstract field
     module Builders
-      class BuildBelongsTo
+      class BelongsTo
         def call; end
       end
     end

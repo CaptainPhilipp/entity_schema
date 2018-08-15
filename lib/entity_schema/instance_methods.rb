@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'dry/core/class_builder'
-
 module EntitySchema
   # TODO: doc
   module InstanceMethods
     def initialize(params = Undefined)
       self.class.finalize!
-
       # TODO: slice by ruby version
       @attributes_ = (params == Undefined ? {} : params.slice(*self.class.schema.names))
       @objects_ = {}

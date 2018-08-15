@@ -1,43 +1,47 @@
 # frozen_string_literal: true
 
+require_relative 'field_resolvers/builders/property'
+
+
 module EntitySchema
   # class-level methods for define schema
   module Dsl
     # TODO: specification вместо просто хеша параметров
     # TODO: билдер вместо простого создания инлайн
-    def property(name, key: name, hidden: false, setter: !hidden, getter: !hidden)
-      # TODO: schema.add_field Builders::Property.call(...)
-      schema.add_field name, Property.new(self, name, opts(key, setter, getter, hidden, mapper))
+    def property(name, **opts)
+      schema.add_field name, EntitySchema::FieldResolvers::Builders::Property.instance.call(name, schema, opts)
     end
 
-    def object(name, **opts); end
+    def property?(*args) end
 
-    def belongs_to(obj_name, fk_name = nil, obj_pk_name = nil, **_opts)
-      # TODO: Builders::BelongsTo
-      fk, pk = fk__pk(name, fk_name, obj_pk_name)
+    # def object(name, **opts); end
 
-      fk_belongs_to     = FieldResolvers::FkBelongsTo.new
-      object_belongs_to = FieldResolvers::ObjectBelongsTo.new
+    # def belongs_to(obj_name, fk_name = nil, obj_pk_name = nil, **_opts)
+    #   # TODO: Builders::BelongsTo
+    #   fk, pk = fk__pk(name, fk_name, obj_pk_name)
 
-      observer = FieldResolvers::ObserverBelongsTo.new(fk_belongs_to, object_belongs_to, object_pk: pk)
+    #   fk_belongs_to     = FieldResolvers::FkBelongsTo.new
+    #   object_belongs_to = FieldResolvers::ObjectBelongsTo.new
 
-      fk_belongs_to.observer_belongs_to     = observer
-      object_belongs_to.observer_belongs_to = observer
+    #   observer = FieldResolvers::ObserverBelongsTo.new(fk_belongs_to, object_belongs_to, object_pk: pk)
 
-      schema.add_field(fk, fk_belongs_to)
-      schema.add_field(obj_name, object_belongs_to)
-    end
+    #   fk_belongs_to.observer_belongs_to     = observer
+    #   object_belongs_to.observer_belongs_to = observer
 
-    # rubocop:disable Naming/PredicateName
-    def has_one(name, **opts); end
+    #   schema.add_field(fk, fk_belongs_to)
+    #   schema.add_field(obj_name, object_belongs_to)
+    # end
 
-    def has_many(name, **opts); end
-    # rubocop:enable Naming/PredicateName
+    # # rubocop:disable Naming/PredicateName
+    # def has_one(name, **opts); end
 
-    def timestamps(setter: false)
-      property :created_at, setter: setter
-      property :updated_at, setter: setter
-    end
+    # def has_many(name, **opts); end
+    # # rubocop:enable Naming/PredicateName
+
+    # def timestamps(setter: false)
+    #   property :created_at, setter: setter
+    #   property :updated_at, setter: setter
+    # end
 
     private
     def fk__pk(name, fk, pk)
@@ -52,30 +56,26 @@ module EntitySchema
       end
     end
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-
-    def opts(key, setter, getter, hidden, mapper)
-      { key: key, setter: setter, getter: getter, hidden: hidden, mapper: mapper }
-    end
   end
 end
 
-class Product
-  property  :id
-  property  :article
-  property  :enabled
-  property  :new?,        key: :is_new
-  property  :sale?,       key: :is_sale
-  property  :bestseller?, key: :is_bestseller
-  timestamps
+# class Product
+#   property  :id
+#   property  :article
+#   property  :enabled
+#   property  :new?,        key: :is_new
+#   property  :sale?,       key: :is_sale
+#   property  :bestseller?, key: :is_bestseller
+#   timestamps
 
-  object :size, map_to: Size
+#   object :size, map_to: Size
 
-  belongs_to :color, { color_uid: :uid }, map_to: Color
-  has_many   :prices,                     map_to: Prices
-  has_many   :seasons,                    map_to: Season
-  has_many   :materials_products,         map_to: MaterialsProduct
+#   belongs_to :color, { color_uid: :uid }, map_to: Color
+#   has_many   :prices,                     map_to: Prices
+#   has_many   :seasons,                    map_to: Season
+#   has_many   :materials_products,         map_to: MaterialsProduct
 
-  def to_h
-    properties.unwrap_objects(:to_h, seasons: :serializable_hash).to_h
-  end
-end
+#   def to_h
+#     properties.unwrap_objects(:to_h, seasons: :serializable_hash).to_h
+#   end
+# end

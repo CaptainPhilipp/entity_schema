@@ -4,10 +4,17 @@ module EntitySchema
   module FieldResolvers
     # Abstract field
     class Abstract
-      def initialize(name, schema, **params)
+      attr_reader :name
+
+      # def initialize(name, schema, **params)
+      def initialize(name, schema, src_key:, private_getter:, private_setter:, get_enabled:, set_enabled:)
         @name   = name.to_sym
         @schema = schema
-        configure(params)
+        @src_key        = src_key
+        @private_getter = private_getter
+        @private_setter = private_setter
+        @get_enabled    = get_enabled
+        @set_enabled    = set_enabled
       end
 
       def public_set(attributes, objects, value)
@@ -28,12 +35,20 @@ module EntitySchema
         raise NotImplementedError
       end
 
-      def public_set?
-        @public_set
+      def get_enabled?
+        @get_enabled
       end
 
-      def public_get?
-        @public_get
+      def set_enabled?
+        @set_enabled
+      end
+
+      def private_getter?
+        @is_private_getter
+      end
+
+      def private_setter?
+        @is_private_setter
       end
 
       def given?(*storages)
@@ -42,27 +57,18 @@ module EntitySchema
 
       private
 
-      attr_reader :schema, :name, :src_key, :serialize_method
-
-      def configure(params)
-        private_    = to_bool(params.delete(:private))
-        @public_set = to_bool(params.delete(:setter)) || !private_
-        @public_get = to_bool(params.delete(:getter)) || !private_
-        @src_key    = params.delete(:key)&.to_sym || @name
-
-        raise "Unknown options given: #{params.inspect}" if params.any?
-      end
+      attr_reader :schema, :src_key, :serialize_method
 
       def to_bool(value)
         value ? true : false
       end
 
       def guard_public_set
-        raise_disabled(subject: 'Setter') unless public_set?
+        raise_disabled(subject: 'Setter') unless set_enabled?
       end
 
       def guard_public_get
-        raise_disabled(subject: 'Getter') unless public_get?
+        raise_disabled(subject: 'Getter') unless get_enabled?
       end
 
       def read(storage)
