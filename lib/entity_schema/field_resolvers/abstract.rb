@@ -18,12 +18,24 @@ module EntitySchema
       end
 
       def public_set(attributes, objects, value)
+        guard_enabled_set
         guard_public_set
         base_set(attributes, objects, value)
       end
 
       def public_get(attributes, objects)
+        guard_enabled_get
         guard_public_get
+        base_get(attributes, objects)
+      end
+
+      def set(attributes, objects, value)
+        guard_enabled_set
+        base_set(attributes, objects, value)
+      end
+
+      def get(attributes, objects)
+        guard_enabled_get
         base_get(attributes, objects)
       end
 
@@ -44,11 +56,11 @@ module EntitySchema
       end
 
       def private_getter?
-        @is_private_getter
+        @private_getter
       end
 
       def private_setter?
-        @is_private_setter
+        @private_setter
       end
 
       def given?(*storages)
@@ -63,12 +75,20 @@ module EntitySchema
         value ? true : false
       end
 
-      def guard_public_set
+      def guard_enabled_set
         raise_disabled(subject: 'Setter') unless set_enabled?
       end
 
-      def guard_public_get
+      def guard_enabled_get
         raise_disabled(subject: 'Getter') unless get_enabled?
+      end
+
+      def guard_public_set
+        raise_private(subject: 'Setter') if private_setter?
+      end
+
+      def guard_public_get
+        raise_private(subject: 'Getter') if private_getter?
       end
 
       def read(storage)
@@ -81,6 +101,10 @@ module EntitySchema
 
       def raise_disabled(subject:)
         raise NoMethodError, "#{subject} disabled for field `#{name}` in `#{schema.owner}`"
+      end
+
+      def raise_private(subject:)
+        raise NameError, "Private #{subject} called for field `#{name}` in `#{schema.owner}`"
       end
     end
   end

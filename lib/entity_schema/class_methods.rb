@@ -21,9 +21,17 @@ module EntitySchema
       schema.freeze
       # TODO: define predicates
       schema.fields_list.each do |field|
-        name = field.name
-        define_method(name) { field.public_get(@attributes_, @objects_) } if field.get_enabled?
-        define_method(:"#{name}=") { |v| field.public_set(@attributes_, @objects_, v) } if field.set_enabled?
+        if field.get_enabled?
+          getter = field.name
+          define_method(getter) { field.get(@attributes_, @objects_) }
+          private(getter) if field.private_getter?
+        end
+
+        if field.set_enabled?
+          setter = :"#{field.name}="
+          define_method(setter) { |v| field.set(@attributes_, @objects_, v) }
+          private(setter) if field.private_setter?
+        end
       end
     end
   end

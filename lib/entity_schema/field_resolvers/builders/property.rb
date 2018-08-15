@@ -19,10 +19,10 @@ module EntitySchema
             name,
             schema,
             src_key:        o.delete(:key)                  || name,
-            private_getter: bool(o.delete(:private_getter)) || is_private,
-            private_setter: bool(o.delete(:private_setter)) || is_private,
-            get_enabled:    bool(o.delete(:getter))         || !is_hidden,
-            set_enabled:    bool(o.delete(:setter))         || !is_hidden,
+            private_getter: default(o.delete(:private_getter), is_private),
+            private_setter: default(o.delete(:private_setter), is_private),
+            get_enabled:    default(o.delete(:getter), !is_hidden),
+            set_enabled:    default(o.delete(:setter), !is_hidden)
           ).tap { guard_unknown_options!(o) }
         end
 
@@ -30,6 +30,10 @@ module EntitySchema
 
         def bool(value)
           value ? true : false
+        end
+
+        def default(value, default)
+          value.nil? ? default : value
         end
 
         def sub(value, **opts)

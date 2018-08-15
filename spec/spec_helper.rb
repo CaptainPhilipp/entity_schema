@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
+require 'pry'
 require 'entity_schema'
 
 RSpec.configure do |config|
