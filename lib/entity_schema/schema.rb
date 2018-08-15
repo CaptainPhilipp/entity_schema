@@ -69,8 +69,8 @@ module EntitySchema
       fields[name].given?(attributes, objects)
     end
 
-    def names
-      fields.keys
+    def keys
+      fields.values.map(&:src_key)
     end
 
     private

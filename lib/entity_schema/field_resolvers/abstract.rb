@@ -4,7 +4,7 @@ module EntitySchema
   module FieldResolvers
     # Abstract field
     class Abstract
-      attr_reader :name
+      attr_reader :src_key, :name # TODO: :name private?
 
       # def initialize(name, schema, **params)
       def initialize(name, schema, src_key:, private_getter:, private_setter:, get_enabled:, set_enabled:)
@@ -57,7 +57,7 @@ module EntitySchema
 
       private
 
-      attr_reader :schema, :src_key, :serialize_method
+      attr_reader :schema, :serialize_method
 
       def to_bool(value)
         value ? true : false

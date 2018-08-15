@@ -6,7 +6,7 @@ module EntitySchema
     def initialize(params = Undefined)
       self.class.finalize!
       # TODO: slice by ruby version
-      @attributes_ = (params == Undefined ? {} : params.slice(*self.class.schema.names))
+      @attributes_ = (params == Undefined ? {} : params.slice(*self.class.schema.keys))
       @objects_ = {}
     end
 

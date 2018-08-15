@@ -44,12 +44,11 @@ RSpec.describe 'EntitySchema.property()' do
   end
 
   describe 'with `:key` option, access by name' do
-    skip 'TODO'
     it { expect(entity.property_name).to               eq 'property_key' }
     it { expect(entity[:property_name]).to             eq 'property_key' }
-    it { expect(entity.property_name   = 'changed').to change { entity[:property_name] }.from('property_key').to('changed') }
-    it { expect(entity[:property_name] = 'changed').to change { entity.property_name }.from('property_key').to('changed') }
-    xit { expect(entity.to_h.key?[:property_name]).to  be false }
+    it { expect { entity.property_name   = 'changed' }.to change { entity[:property_name] }.from('property_key').to('changed') }
+    it { expect { entity[:property_name] = 'changed' }.to change { entity.property_name }.from('property_key').to('changed') }
+    it { expect(entity.to_h.key?(:property_name)).to  be false }
   end
 
   describe 'with `:key` option, access by key' do
