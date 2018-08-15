@@ -12,7 +12,10 @@ module EntitySchema
       schema.add_field name, EntitySchema::FieldResolvers::Builders::Property.instance.call(name, schema, opts)
     end
 
-    def property?(*args) end
+    def property?(name, **opts)
+      opts.merge! predicate: true
+      schema.add_field name, EntitySchema::FieldResolvers::Builders::Property.instance.call(name, schema, opts)
+    end
 
     # def object(name, **opts); end
 

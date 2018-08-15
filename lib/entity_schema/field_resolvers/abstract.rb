@@ -71,7 +71,7 @@ module EntitySchema
 
       attr_reader :schema, :serialize_method
 
-      def to_bool(value)
+      def bool(value)
         value ? true : false
       end
 

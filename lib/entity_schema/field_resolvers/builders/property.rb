@@ -22,7 +22,8 @@ module EntitySchema
             private_getter: default(o.delete(:private_getter), is_private),
             private_setter: default(o.delete(:private_setter), is_private),
             get_enabled:    default(o.delete(:getter), !is_hidden),
-            set_enabled:    default(o.delete(:setter), !is_hidden)
+            set_enabled:    default(o.delete(:setter), !is_hidden),
+            predicate:      o.delete(:predicate)
           ).tap { guard_unknown_options!(o) }
         end
 

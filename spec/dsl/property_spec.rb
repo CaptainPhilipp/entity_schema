@@ -72,7 +72,7 @@ RSpec.describe 'EntitySchema.property()' do
     it { expect(entity[:unsettable]).to                eq 'unsettable' }
     it { expect { entity.unsettable   = 'changed' }.to raise_error(NoMethodError) }
     it { expect { entity[:unsettable] = 'changed' }.to raise_error(NameError, 'Setter disabled for field `unsettable` in `Entity`') }
-    xit { expect(entity.to_h[:unsettable]).to          eq 'unsettable' }
+    it { expect(entity.to_h[:unsettable]).to          eq 'unsettable' }
   end
 
   describe 'with `private: true` option' do
@@ -82,63 +82,41 @@ RSpec.describe 'EntitySchema.property()' do
     it { expect { entity[:privat] = 'changed' }.to      raise_error(NameError, 'Private Setter called for field `privat` in `Entity`') }
     it { expect(entity.send(:privat)).to                eq 'private' }
     it { expect { entity.send(:privat=, 'changed') }.to change { entity.to_h[:privat] }.from('private').to('changed') }
-    xit { expect(entity.to_h[:privat]).to               eq 'private' }
+    it { expect(entity.to_h[:privat]).to               eq 'private' }
   end
 
   describe 'with `hidden: true` option' do
-    skip 'TODO'
-    it { expect { entity.hidden }.to        raise_error(NoMethodError) }
+    it { expect { entity.hidden }.to               raise_error(NoMethodError) }
     it { expect { entity.hidden   = 'changed' }.to raise_error(NoMethodError) }
-    it { expect { entity[:hidden] }.to      raise_error(NameError, 'Getter hidden for field `hidden` in `Entity`') }
-    it { expect { entity[:hidden] = 'changed' }.to raise_error(NameError, 'Setter hidden for field `hidden` in `Entity`') }
-    xit { expect(entity.to_h[:hidden]).to    eq 'private' }
+    it { expect { entity[:hidden] }.to             raise_error(NameError, 'Getter disabled for field `hidden` in `Entity`') }
+    it { expect { entity[:hidden] = 'changed' }.to raise_error(NameError, 'Setter disabled for field `hidden` in `Entity`') }
+    it { expect(entity.to_h[:hidden]).to            eq 'hidden' }
   end
 
   describe 'with .property? method, without options' do
-    skip 'TODO'
+    it { expect(entity.predicate).to           be true }
     it { expect(entity.predicate?).to          be true }
     it { expect(entity[:predicate]).to         be true }
-    it { expect(entity.predicate   = false).to change { entity[:predicate] }.from(true).to(false) }
-    it { expect(entity[:predicate] = false).to change { entity.predicate? }.from(true).to(false) }
-    xit { expect(entity.to_h[:predicate]).to    be true }
+    it { expect { entity.predicate   = false }.to change { entity[:predicate] }.from(true).to(false) }
+    it { expect { entity[:predicate] = false }.to change { entity.predicate? }.from(true).to(false) }
+    it { expect(entity.to_h[:predicate]).to    be true }
   end
 
   describe 'with .property? method, with `:key` option, access by name' do
-    skip 'TODO'
     it { expect(entity.predicate_name?).to            be false }
     it { expect(entity[:predicate_name]).to           be false }
-    it { expect(entity.predicate_name   = true).to    change { entity[:predicate_name] }.from(false).to(true) }
-    it { expect(entity[:predicate_name] = true).to    change { entity.predicate_name }.from(false).to(true) }
-    xit { expect(entity.to_h.key?[:predicate_name]).to be false }
-  end
-
-  describe 'with .property? method, with `:key` option, access by key' do
-    skip 'TODO'
-    it { expect { entity.predicate_key? }.to       raise_error(NoMethodError) }
-    it { expect { entity.predicate_key = 'changed' }.to   raise_error(NoMethodError) }
-    it { expect { entity[:predicate_key] }.to      raise_error(NameError, "Unknown field `predicate_key` for `Entity`") }
-    it { expect { entity[:predicate_key] = 'changed' }.to raise_error(NameError, "Unknown field `predicate_key` for `Entity`") }
-    xit { expect(entity.to_h[:predicate_key]).to    eq 'predicate_key' }
+    it { expect { entity.predicate_name   = true }.to change { entity[:predicate_name] }.from(false).to(true) }
+    it { expect { entity[:predicate_name] = true }.to change { entity.predicate_name }.from(false).to(true) }
+    it { expect(entity.to_h.key?(:predicate_name)).to be false }
   end
 
   it '#to_h returns only permited keys' do
-    expect(entity.to_h).to eq property:      'property',
-                              property_key:  'property_key',
-                              ungettable:    'ungettable',
-                              unsettable:    'unsettable',
-                              private:       'private',
-                              hidden:        'hidden',
-                              predicate:     true,
-                              predicate_key: false
-  end
-
-  it 'Not affects Hash' do
     params = {
       property:      'property',
       property_key:  'property_key',
       ungettable:    'ungettable',
       unsettable:    'unsettable',
-      private:       'private',
+      privat:        'private',
       hidden:        'hidden',
       predicate:     true,
       predicate_key: false,

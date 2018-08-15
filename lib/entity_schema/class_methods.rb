@@ -27,6 +27,12 @@ module EntitySchema
           private(getter) if field.private_getter?
         end
 
+        if field.predicate?
+          getter = :"#{field.name}?"
+          define_method(getter) { field.get(@attributes_, @objects_) }
+          private(getter) if field.private_getter?
+        end
+
         if field.set_enabled?
           setter = :"#{field.name}="
           define_method(setter) { |v| field.set(@attributes_, @objects_, v) }
