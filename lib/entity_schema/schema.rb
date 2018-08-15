@@ -35,13 +35,13 @@ module EntitySchema
     end
 
     def get(attributes, objects, name)
-      raise_unknown_field(name) unless field?(name)
+      guard_unknown_field(name)
 
       fields[name].public_get(attributes, objects)
     end
 
     def set(attributes, objects, name, value)
-      raise_unknown_field(name) unless field?(name)
+      guard_unknown_field(name)
 
       fields[name].public_set(attributes, objects, value)
     end
@@ -65,7 +65,7 @@ module EntitySchema
     end
 
     def given?(attributes, objects, name)
-      raise "Unknown field '#{name}' for `#{owner}`" unless field?(name)
+      guard_unknown_field(name)
       fields[name].given?(attributes, objects)
     end
 
@@ -85,8 +85,10 @@ module EntitySchema
       end
     end
 
-    def raise_unknown_field(name)
-      raise "Unknown attribute `#{name}`"
+    def guard_unknown_field(name)
+      return if field?(name)
+
+      raise NameError, "Unknown field '#{name}' for `#{owner}`"
     end
   end
 end

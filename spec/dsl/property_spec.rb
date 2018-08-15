@@ -5,7 +5,7 @@ RSpec.describe 'EntitySchema.property()' do
     Class.new do
       extend EntitySchema
 
-      def self.name
+      def self.to_s
         'Entity'
       end
 
@@ -52,12 +52,11 @@ RSpec.describe 'EntitySchema.property()' do
   end
 
   describe 'with `:key` option, access by key' do
-    skip 'TODO'
     it { expect { entity.property_key }.to               raise_error(NoMethodError) }
     it { expect { entity.property_key = 'changed' }.to   raise_error(NoMethodError) }
     it { expect { entity[:property_key] }.to             raise_error(NameError, "Unknown field 'property_key' for `Entity`") }
     it { expect { entity[:property_key] = 'changed' }.to raise_error(NameError, "Unknown field 'property_key' for `Entity`") }
-    xit { expect(entity.to_h[:property_key]).to          eq 'property_key' }
+    it { expect(entity.to_h[:property_key]).to          eq 'property_key' }
   end
 
   describe 'with `getter: false` option' do
@@ -126,8 +125,8 @@ RSpec.describe 'EntitySchema.property()' do
   end
 
   it '#to_h returns only permited keys' do
-    expect(entity.to_h).to eq property:        'property',
-                              property_key:   'property_key',
+    expect(entity.to_h).to eq property:      'property',
+                              property_key:  'property_key',
                               ungettable:    'ungettable',
                               unsettable:    'unsettable',
                               private:       'private',
@@ -138,8 +137,8 @@ RSpec.describe 'EntitySchema.property()' do
 
   it 'Not affects Hash' do
     params = {
-      property:        'property',
-      property_key:   'property_key',
+      property:      'property',
+      property_key:  'property_key',
       ungettable:    'ungettable',
       unsettable:    'unsettable',
       private:       'private',
