@@ -1,4 +1,4 @@
-# entity_schema
+# EntitySchema
 class-level DSL for mapping Hash with object-like structure to Object (as Entity or Value Object), and then return it into Hash
 
 ## Performance
