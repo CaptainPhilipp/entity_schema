@@ -13,7 +13,7 @@ module EntitySchema
       return if @finalized_
       @finalized_ = true
 
-      schema.freeze
+      schema.deep_freeze
       schema.fields_list.each do |field|
         getter = field.name
         define_method(getter) { field.base_get(@attributes_, @objects_) }

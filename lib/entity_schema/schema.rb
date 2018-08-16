@@ -3,79 +3,82 @@
 module EntitySchema
   # aggregate of field resolvers
   class Schema
-    attr_reader :owner, :object_fields
+    attr_reader :owner
 
     def initialize(owner)
       @owner = owner
-      @fields = {}
+      @all_fields = {}
       @object_fields = {}
     end
 
     def extends(src)
-      @fields = extract_schema(src).fields.merge(fields)
+      @all_fields = extract_schema(src).fields.merge(fields)
+      self
     end
 
     def add_field(name, field)
-      fields[name] = field
+      all_fields[name] = field
     end
 
     def add_object_field(name, field)
-      @object_fields[name] = field
-      add_field(name, field)
+      all_fields[name] = field
+      object_fields[name] = field
     end
 
-    def freeze
-      fields.each do |name, field|
+    def deep_freeze
+      all_fields.each do |name, field|
         name.freeze
         field.freeze
-      end
-
-      fields.freeze
-      super
+      end.freeze
+      freeze
     end
 
     def get(attributes, objects, name)
       guard_unknown_field(name)
-
-      fields[name].public_get(attributes, objects)
+      all_fields[name].public_get(attributes, objects)
     end
 
     def set(attributes, objects, name, value)
       guard_unknown_field(name)
+      all_fields[name]&.public_set(attributes, objects, value)
+    end
 
-      fields[name].public_set(attributes, objects, value)
+    def weak_set(attributes, objects, name, value)
+      all_fields[name]&.weak_set(attributes, objects, value)
     end
 
     def serialize(attributes, objects)
-      output = {}
       attributes.dup.tap do |output|
         objects.each_key do |key|
-          self.class.schema.object_fields[key].serialize(output, objects)
+          object_fields[key]&.serialize(output, objects)
         end
       end
-      output
     end
 
     def fields_list
-      fields.values
+      all_fields.values
     end
 
     def field?(name)
-      fields.key?(name)
+      all_fields.key?(name)
     end
 
     def given?(attributes, objects, name)
       guard_unknown_field(name)
-      fields[name].given?(attributes, objects)
+      all_fields[name].given?(attributes, objects)
     end
 
-    def keys
-      fields.values.map(&:src_key)
+    def weak_given?(attributes, objects, name)
+      all_fields[name]&.given?(attributes, objects)
+    end
+
+    def src_keys
+      all_fields.values.map(&:src_key)
     end
 
     private
 
-    attr_reader :fields
+    attr_reader :all_fields, :object_fields
 
     def extract_schema(input)
       case input

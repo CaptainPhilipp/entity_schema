@@ -34,7 +34,7 @@ raw_hash = {
   updated_at: '2018-08-16 20:17:55 UTC',
   size: { ... size params ... },
   color_uid: 7,
-  seasons: [{ ... seasons params ... }, {...}, ...]
+  seasons: [{ ... season params ... }, {...}, ...]
 }
 
 product = Product.new(raw_hash)
@@ -75,65 +75,46 @@ it means, that if you execute something like this:
 hash = { foo: 'FOO', bar: 'BAR' }
 FooBarEntity.new(hash).to_h
 ```
-It will only `#slice` hash, and returns it innocent.
+It will only `#slice` and `#dup` hash, and returns it innocent.
 
 ## Validations, and coercions
 
 No. Entity assumes that given data already validated and coerced.
 
-## Associations
+## DSL
 
-Entity allow you to manage associated objects and collections to Objects you want
+#### property
 
-#### Assume that we have this class:
+TODO
+
+#### property?
+
+TODO
+
+#### timestamps
+
+It is sugar, that expanded to:
 ```ruby
-class MyObject
-  def self.wrap(h)
-    new(h)
-  end
-
-  def initialize(id:)
-    @id = id
-  end
-end
+property :created_at, **opts
+property :updated_at, **opts
 ```
 
-#### So we can describe Entity:
-```ruby
-class Entity
-  extend EntitySchema
+#### object
 
-  object     :obj,  map_to: MyObject, map_method: :wrap
-  has_one    :one,  map_to: OpenStruct
-  has_many   :many, map_to: OpenStruct
-  belongs_to :belonged, { belonged_uid: :id }, map_to: OpenStruct
-end
-```
+TODO
 
-### And work with it like this:
-```ruby
-hash = {
-  obj:    { foo: 'foo' },
-  one:    { bar: 'bar' },
-  many:   [{ id: 1 }, { id: 2 }],
-  belong: { id: 3 }
-}
+#### has_one
 
-entity = Entity.new(hash)
+Just alias for `object`
 
-entity.obj      # => <MyObject @foo: 'foo'>
-entity.one      # => <OpenStruct @bar: 'bar'>
-entity.many     # => [<OpenStruct @id: 1>, <OpenStruct @id: 2>]
-entity.belonged # => <OpenStruct @id: 3>
+#### collection
 
-entity.obj.foo = 'FOO'
-entity.one.bar = 'BAR'
+TODO
 
-entity.given?(:belonged) # => true
-entity.belonged          # => <OpenStruct @id: 3>
-entity.belonged_uid = nil
-entity.belonged          # => nil
-entity.given?(:belonged) # => false
+#### has_many
 
-entity.to_h # => { obj: { foo: 'FOO' }, one: { bar: 'BAR' }, many: [{ id: 1 }, { id: 2 }] }
-```
+Just alias for `collection`
+
+#### belongs_to
+
+TODO

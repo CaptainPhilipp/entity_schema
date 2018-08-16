@@ -32,11 +32,6 @@ module EntitySchema
 
       attr_reader :serialize_method
 
-      def configure(params)
-        @serialize_method = params.delete(:serialize) || :to_h
-        super
-      end
-
       def map(tuple)
         map_to.public_send(map_method, tuple)
       end

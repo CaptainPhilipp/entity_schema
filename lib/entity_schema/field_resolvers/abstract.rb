@@ -4,7 +4,7 @@ module EntitySchema
   module FieldResolvers
     # Abstract field
     class Abstract
-      attr_reader :src_key, :name # TODO: :name private?
+      attr_reader :src_key, :name
 
       # def initialize(name, schema, **params)
       def initialize(name, schema, src_key:, private_getter:, private_setter:)
@@ -25,6 +25,10 @@ module EntitySchema
         base_get(attributes, objects)
       end
 
+      def remove(attributes, objects)
+        delete(attributes) || delete(objects)
+      end
+
       def base_set(_attributes, _objects, _value)
         raise NotImplementedError
       end
@@ -41,24 +45,22 @@ module EntitySchema
         @private_setter
       end
 
-      def given?(*storages)
-        storages.all? { |storage| storage.key? src_key }
+      def given?(attributes, objects)
+        attributes.key?(src_key) || objects.key?(src_key)
       end
 
       private
 
       attr_reader :schema, :serialize_method
 
-      def bool(value)
-        value ? true : false
-      end
-
       def guard_public_set
-        raise_private(subject: 'Setter') if private_setter?
+        return unless private_setter?
+        raise NameError, "Private Setter called for field `#{name}` in `#{schema.owner}`"
       end
 
       def guard_public_get
-        raise_private(subject: 'Getter') if private_getter?
+        return unless private_getter?
+        raise NameError, "Private Getter called for field `#{name}` in `#{schema.owner}`"
       end
 
       def read(storage)
@@ -69,12 +71,8 @@ module EntitySchema
         storage[src_key] = value
       end
 
-      def raise_disabled(subject:)
-        raise NoMethodError, "#{subject} disabled for field `#{name}` in `#{schema.owner}`"
-      end
-
-      def raise_private(subject:)
-        raise NameError, "Private #{subject} called for field `#{name}` in `#{schema.owner}`"
+      def delete(attributes)
+        attributes.delete(src_key)
       end
     end
   end

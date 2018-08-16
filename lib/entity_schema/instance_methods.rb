@@ -5,15 +5,14 @@ module EntitySchema
   module InstanceMethods
     def initialize(params = Undefined)
       self.class.finalize!
-      # TODO: slice for ruby > 2.5.0
-      @attributes_ = (params == Undefined ? {} : params.slice(*self.class.schema.keys))
+      # TODO: change slice for ruby < 2.5.0
+      @attributes_ = (params == Undefined ? {} : params.slice(*self.class.schema.src_keys))
       @objects_ = {}
     end
 
     def update_attributes(params)
       params.each_pair do |attr, value|
-        next unless key?(attr)
-        set(attr, value)
+        self.class.schema.weak_set(@attributes_, @objects_, key, value)
       end
     end
 
@@ -34,15 +33,15 @@ module EntitySchema
     end
 
     def given?(name)
-      self.class.schema.given?(@attributes_, @objects, name)
+      self.class.schema.given?(@attributes_, @objects_, name)
+    end
+
+    def key?(name)
+      self.class.schema.weak_given?(@attributes_, @objects_, name)
     end
 
     def to_h
-      @attributes_.dup.tap do |output|
-        @objects_.each_key do |key|
-          self.class.schema.object_fields[key].serialize(output, @objects_)
-        end
-      end
+      self.class.schema.serialize(@attributes_, @objects_)
     end
   end
 end

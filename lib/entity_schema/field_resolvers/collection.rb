@@ -18,6 +18,7 @@ module EntitySchema
         end
       end
 
+      # ? what if entity initialized with object, not with tuple? is it invalid, or we must wrap or analize input?
       def base_get(attributes, objects)
         tuple = delete(attributes)
         tuple.nil? ? read(objects) : write(objects, map(tuple))
@@ -31,17 +32,8 @@ module EntitySchema
 
       attr_reader :serialize_method
 
-      def configure(params)
-        @serialize_method = params.delete(:serialize) || :to_h
-        super
-      end
-
       def map(tuples)
         tuples.map { |tuple| map_to.public_send(map_method, tuple) }
-      end
-
-      def delete(attributes)
-        attributes.delete(src_key)
       end
     end
   end

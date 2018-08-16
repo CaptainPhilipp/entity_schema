@@ -6,9 +6,9 @@ module EntitySchema
   module FieldResolvers
     # TODO: doc
     class Property < Abstract
-      def initialize(*args, **opts)
-        @predicate = bool(opts.delete(:predicate))
-        super
+      def initialize(name, schema, src_key:, private_getter:, private_setter:, predicate:)
+        @predicate = :predicate
+        super(name, schema, src_key: src_key, private_getter: private_getter, private_setter: private_setter)
       end
 
       def predicate?

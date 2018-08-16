@@ -11,17 +11,17 @@ module EntitySchema
 
     def property?(name, **opts)
       opts.merge! predicate: true
-      schema.add_field name, FieldResolvers::Builders::Property.(name, schema, opts)
+      property(name, opts)
     end
 
-    def object(_name, **_opts); end
+    def object(_name, **_opts) end
 
-    def has_one(_name, **_opts); end
+    alias has_one object
 
-    def belongs_to(_name, **_opts); end
+    def belongs_to(_name, **_opts) end
 
-    def collection(_name, **_opts); end
+    def collection(_name, **_opts) end
 
-    def has_many(_name, **_opts); end
+    alias has_many collection
   end
 end
