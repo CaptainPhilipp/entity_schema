@@ -14,7 +14,6 @@ RSpec.describe 'EntitySchema.property()' do
       property  :privat,              private: true
       property  :setter_private,      setter:  :private
       property  :private_getter,      private: :getter
-      property  :private_setter_true, private_setter: true
       property  :undefined
       property? :predicate
       property? :predicate_name, key: :predicate_key
@@ -57,14 +56,6 @@ RSpec.describe 'EntitySchema.property()' do
     it { expect { entity[:property_key] }.to             raise_error(NameError, "Unknown field 'property_key' for `Entity`") }
     it { expect { entity[:property_key] = 'changed' }.to raise_error(NameError, "Unknown field 'property_key' for `Entity`") }
     it { expect(entity.to_h[:property_key]).to           eq 'property_key' }
-  end
-
-  describe 'with `private_setter_true: true` option' do
-    it { expect(entity.private_setter_true).to                       eq 'private_setter_true' }
-    it { expect { entity.private_setter_true   = 'changed' }.to      raise_error(NoMethodError) }
-    it { expect(entity[:private_setter_true]).to                     eq 'private_setter_true' }
-    it { expect { entity[:private_setter_true] = 'changed' }.to      raise_error(NameError, 'Private Setter called for field `private_setter_true` in `Entity`') }
-    it { expect { entity.send(:private_setter_true=, 'changed') }.to change { entity.to_h[:private_setter_true] }.from('private_setter_true').to('changed') }
   end
 
   describe 'with `setter: :private` option' do

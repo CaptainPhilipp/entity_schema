@@ -10,14 +10,11 @@ module EntitySchema
       class Property
         include Singleton
 
-        # TODO: refactor this shit
         def call(name, schema, options)
           h = options.dup
           key_            = check_type! :key, h, [Symbol, NilClass]
           getter_         = check! :getter, h, [true, false, :private, nil]
           setter_         = check! :setter, h, [true, false, :private, nil]
-          private_getter_ = check! :private_getter, h, [true, false, nil]
-          private_setter_ = check! :private_setter, h, [true, false, nil]
           private_        = check! :private, h, [true, false, :getter, :setter, nil]
           predicate_      = check! :predicate, h, [true, false, nil]
 
@@ -25,10 +22,10 @@ module EntitySchema
             name,
             schema,
             src_key:        first_of(key_, name),
-            private_getter: first_of(private_getter_, true_(private_ == :getter), true_(getter_ == :private), true_(private_), false),
-            private_setter: first_of(private_setter_, true_(private_ == :setter), true_(setter_ == :private), true_(private_), false),
+            private_getter: first_of(true_(private_ == :getter), true_(getter_ == :private), true_(private_), false),
+            private_setter: first_of(true_(private_ == :setter), true_(setter_ == :private), true_(private_), false),
             predicate:      to_bool(predicate_)
-          ).tap { guard_unknown_options!(h) }
+          ).tap { guard_unknown_options!(h, name) }
         end
 
         private
@@ -57,8 +54,8 @@ module EntitySchema
           value ? true : false
         end
 
-        def guard_unknown_options!(opts)
-          raise "Unknown options given: #{opts.inspect}" if opts.any?
+        def guard_unknown_options!(opts, name)
+          raise "Unknown options given to `:#{name}`: #{opts.inspect}" if opts.any?
         end
       end
     end
