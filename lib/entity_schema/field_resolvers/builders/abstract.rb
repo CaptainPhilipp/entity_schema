@@ -18,19 +18,19 @@ module EntitySchema
         def check!(key, h, allowed)
           value = h.delete(key)
           return value if allowed.include?(value)
-          raise ArgumentError, ":#{key} option value must be in #{allowed}, but '#{value}'"
+          raise ArgumentError, "option `#{key}:` must be in #{allowed}, but '#{value}'"
         end
 
         def check_type!(key, h, types)
           value = h.delete(key)
           return value if types.any? { |t| value.is_a?(t) }
-          raise ArgumentError, ":#{key} option value must be a #{types}, not #{value.class}"
+          raise ArgumentError, "option `#{key}:` must has one of types #{types}, but is a #{value.class}"
         end
 
         def check_ducktype!(key, h, methods)
           value = h.delete(key)
-          return value if methods.all? { |m| value.respond_to?(m) }
-          raise ArgumentError, ":#{key} option value must respond to #{methods}"
+          return value if value.nil? || methods.all? { |m| value.respond_to?(m) }
+          raise ArgumentError, "option `#{key}:` (#{value.inspect}) must respond to #{methods}"
         end
 
         def first_of(*alternatives)

@@ -85,11 +85,11 @@ No. Entity assumes that given data already validated and coerced.
 
 #### property
 
-TODO
+_TODO_
 
 #### property?
 
-TODO
+_TODO_
 
 #### timestamps
 
@@ -101,7 +101,7 @@ property :updated_at, **opts
 
 #### object
 
-TODO
+_TODO_
 
 #### has_one
 
@@ -109,7 +109,7 @@ Just alias for `object`
 
 #### collection
 
-TODO
+_TODO_
 
 #### has_many
 
@@ -117,4 +117,8 @@ Just alias for `collection`
 
 #### belongs_to
 
-TODO
+_TODO_
+
+## Instance methods
+
+_TODO_
