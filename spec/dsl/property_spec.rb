@@ -11,7 +11,7 @@ RSpec.describe 'EntitySchema.property()' do
 
       property  :property
       property  :property_name, key: :property_key
-      property  :privat,              private: true
+      property  :private_true,        private: true
       property  :setter_private,      setter:  :private
       property  :private_getter,      private: :getter
       property  :undefined
@@ -25,7 +25,7 @@ RSpec.describe 'EntitySchema.property()' do
       property:            'property',
       property_name:       '-',
       property_key:        'property_key',
-      privat:              'private',
+      private_true:        'private',
       private_setter_true: 'private_setter_true',
       setter_private:      'setter_private',
       private_getter:      'private_getter',
@@ -75,13 +75,13 @@ RSpec.describe 'EntitySchema.property()' do
   end
 
   describe 'with `private: true` option' do
-    it { expect { entity.privat }.to                    raise_error(NoMethodError) }
-    it { expect { entity.privat = 'changed' }.to        raise_error(NoMethodError) }
-    it { expect { entity[:privat] }.to                  raise_error(NameError, 'Private Getter called for field `privat` in `Entity`') }
-    it { expect { entity[:privat] = 'changed' }.to      raise_error(NameError, 'Private Setter called for field `privat` in `Entity`') }
-    it { expect(entity.send(:privat)).to                eq 'private' }
-    it { expect { entity.send(:privat=, 'changed') }.to change { entity.to_h[:privat] }.from('private').to('changed') }
-    it { expect(entity.to_h[:privat]).to                eq 'private' }
+    it { expect { entity.private_true }.to                    raise_error(NoMethodError) }
+    it { expect { entity.private_true = 'changed' }.to        raise_error(NoMethodError) }
+    it { expect { entity[:private_true] }.to                  raise_error(NameError, 'Private Getter called for field `private_true` in `Entity`') }
+    it { expect { entity[:private_true] = 'changed' }.to      raise_error(NameError, 'Private Setter called for field `private_true` in `Entity`') }
+    it { expect(entity.send(:private_true)).to                eq 'private' }
+    it { expect { entity.send(:private_true=, 'changed') }.to change { entity.to_h[:private_true] }.from('private').to('changed') }
+    it { expect(entity.to_h[:private_true]).to                eq 'private' }
   end
 
   describe 'with .property? method, without options' do
@@ -105,9 +105,9 @@ RSpec.describe 'EntitySchema.property()' do
     params = {
       property:      'property',
       property_key:  'property_key',
-      privat:        'private',
+      private_true:  'private',
       predicate:     true,
-      predicate_key: false,
+      predicate_key: false
     }
     expect(entity_klass.new(params).to_h).to eq params
   end
