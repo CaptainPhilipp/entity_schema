@@ -6,6 +6,7 @@ module EntitySchema
     class Abstract
       attr_reader :src_key, :name
 
+      # TODO: simplify #initialize signature in all ancestors
       # def initialize(name, schema, **params)
       def initialize(name, schema, src_key:, private_getter:, private_setter:)
         @name   = name.to_sym
