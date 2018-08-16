@@ -7,35 +7,21 @@ module EntitySchema
       attr_reader :src_key, :name # TODO: :name private?
 
       # def initialize(name, schema, **params)
-      def initialize(name, schema, src_key:, private_getter:, private_setter:, get_enabled:, set_enabled:)
+      def initialize(name, schema, src_key:, private_getter:, private_setter:)
         @name   = name.to_sym
         @schema = schema
         @src_key        = src_key
         @private_getter = private_getter
         @private_setter = private_setter
-        @get_enabled    = get_enabled
-        @set_enabled    = set_enabled
       end
 
       def public_set(attributes, objects, value)
-        guard_enabled_set
         guard_public_set
         base_set(attributes, objects, value)
       end
 
       def public_get(attributes, objects)
-        guard_enabled_get
         guard_public_get
-        base_get(attributes, objects)
-      end
-
-      def set(attributes, objects, value)
-        guard_enabled_set
-        base_set(attributes, objects, value)
-      end
-
-      def get(attributes, objects)
-        guard_enabled_get
         base_get(attributes, objects)
       end
 
@@ -45,14 +31,6 @@ module EntitySchema
 
       def base_get(_attributes, _objects)
         raise NotImplementedError
-      end
-
-      def get_enabled?
-        @get_enabled
-      end
-
-      def set_enabled?
-        @set_enabled
       end
 
       def private_getter?
@@ -73,14 +51,6 @@ module EntitySchema
 
       def bool(value)
         value ? true : false
-      end
-
-      def guard_enabled_set
-        raise_disabled(subject: 'Setter') unless set_enabled?
-      end
-
-      def guard_enabled_get
-        raise_disabled(subject: 'Getter') unless get_enabled?
       end
 
       def guard_public_set

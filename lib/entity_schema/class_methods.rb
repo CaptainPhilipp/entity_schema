@@ -21,23 +21,19 @@ module EntitySchema
       schema.freeze
       # TODO: define predicates
       schema.fields_list.each do |field|
-        if field.get_enabled?
-          getter = field.name
-          define_method(getter) { field.get(@attributes_, @objects_) }
-          private(getter) if field.private_getter?
-        end
+        getter = field.name
+        define_method(getter) { field.base_get(@attributes_, @objects_) }
+        private(getter) if field.private_getter?
 
         if field.predicate?
-          getter = :"#{field.name}?"
-          define_method(getter) { field.get(@attributes_, @objects_) }
-          private(getter) if field.private_getter?
+          predicate = :"#{field.name}?"
+          define_method(predicate) { field.base_get(@attributes_, @objects_) }
+          private(predicate) if field.private_getter?
         end
 
-        if field.set_enabled?
-          setter = :"#{field.name}="
-          define_method(setter) { |v| field.set(@attributes_, @objects_, v) }
-          private(setter) if field.private_setter?
-        end
+        setter = :"#{field.name}="
+        define_method(setter) { |input| field.base_set(@attributes_, @objects_, input) }
+        private(setter) if field.private_setter?
       end
     end
   end
