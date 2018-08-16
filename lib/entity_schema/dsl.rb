@@ -6,21 +6,18 @@ require_relative 'field_resolvers/builders/property'
 module EntitySchema
   # class-level methods for define schema
   module Dsl
-    # TODO: specification вместо просто хеша параметров
-    # TODO: билдер вместо простого создания инлайн
     def property(name, **opts)
-      schema.add_field name, EntitySchema::FieldResolvers::Builders::Property.instance.call(name, schema, opts)
+      schema.add_field name, FieldResolvers::Builders::Property.(name, schema, opts)
     end
 
     def property?(name, **opts)
       opts.merge! predicate: true
-      schema.add_field name, EntitySchema::FieldResolvers::Builders::Property.instance.call(name, schema, opts)
+      schema.add_field name, FieldResolvers::Builders::Property.(name, schema, opts)
     end
 
     # def object(name, **opts); end
 
     # def belongs_to(obj_name, fk_name = nil, obj_pk_name = nil, **_opts)
-    #   # TODO: Builders::BelongsTo
     #   fk, pk = fk__pk(name, fk_name, obj_pk_name)
 
     #   fk_belongs_to     = FieldResolvers::FkBelongsTo.new

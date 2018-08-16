@@ -10,6 +10,10 @@ module EntitySchema
       class Property
         include Singleton
 
+        def self.call(*args)
+          instance.call(*args)
+        end
+
         def call(name, schema, options)
           h = options.dup
           key_            = check_type! :key, h, [Symbol, NilClass]
