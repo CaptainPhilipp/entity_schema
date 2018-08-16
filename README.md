@@ -1,43 +1,62 @@
 # EntitySchema
+class-level DSL for mapping Hash with object-like structure to Object (as Entity or Value Object), and then return it into Hash
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/entity_schema`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Performance
 
-TODO: Delete this and the text above, and describe your gem
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'entity_schema'
+Focused on minimal, lazy interaction with raw Hash:
+it means, that if you execute something like this:
 ```
+hash = { foo: 'FOO', bar: 'BAR' }
+FooBarEntity.new(hash).to_h
+```
+It will only `#slice` hash, and returns it innocent
 
-And then execute:
+## Validations, and coercions
 
-    $ bundle
+No. Entity assumes that given data already validated and coerced.
 
-Or install it yourself as:
+## Associations
 
-    $ gem install entity_schema
+Entity allow you to manage associated objects and collections to Objects you want
 
-## Usage
+```
+class Entity
+  extend EntitySchema
 
-TODO: Write usage instructions here
+  object     :obj,  map_to: OpenStruct
+  has_one    :one,  map_to: MyObject, map_method: :newww
+  has_many   :many, map_to: OpenStruct
+  belongs_to :belonged, { belonged_uid: :id }, map_to: OpenStruct
+end
 
-## Development
+class MyObject
+  def self.newww(h)
+    new(h)
+  end
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+  def initialize(id:)
+    @id = id
+  end
+end
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+entity = Entity.new(obj: { foo: 'foo' },
+                    one: { bar: 'bar' },
+                    many: [{ id: 1 }, { id: 2 }],
+                    belong: { id: 3 })
 
-## Contributing
+entity.obj      # => <OpenStruct @foo: 'foo'>
+entity.one      # => <MyObject @bar: 'bar'>
+entity.many     # => [<OpenStruct @id: 1>, <OpenStruct @id: 2>]
+entity.belonged # => <OpenStruct @id: 3>
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/entity_schema. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+entity.obj.foo = 'FOO'
+entity.one.bar = 'BAR'
 
-## License
+entity.given?(:belonged) # => true
+entity.belonged          # => <OpenStruct @id: 3>
+entity.belonged_uid = nil
+entity.belonged          # => nil
+entity.given?(:belonged) # => false
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the EntitySchema project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/entity_schema/blob/master/CODE_OF_CONDUCT.md).
+entity.to_h # => { obj: { foo: 'FOO' }, one: { bar: 'BAR' }, many: [{ id: 1 }, { id: 2 }] }
+```
