@@ -1,25 +1,19 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  # TODO: дистилировать ответственность сущности и переименовать
-  # allow to define schema in `schema do` block
+  # TODO: doc
   module ClassMethods
-    # @example
-    #   schema do
-    #     property :foo
-    #     property :bar
-    #   end
-    def schema(_opts = {})
+    def schema
       @schema ||= Schema.new(self)
     end
 
+    # TODO: maybe remove #finalize! and define methods in Dsl module
     # freeze schema and define readers and writers
     def finalize!
       return if @finalized_
       @finalized_ = true
 
       schema.freeze
-      # TODO: define predicates
       schema.fields_list.each do |field|
         getter = field.name
         define_method(getter) { field.base_get(@attributes_, @objects_) }

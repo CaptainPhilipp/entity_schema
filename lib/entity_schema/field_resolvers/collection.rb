@@ -4,7 +4,6 @@ module EntitySchema
   module FieldResolvers
     # TODO: doc
     class Collection < Object
-      # TODO: collection object, и в него перенаправить сеттер
       # mapped tuple must be only in `objects` hash
       def base_set(attributes, objects, values)
         value = values.first

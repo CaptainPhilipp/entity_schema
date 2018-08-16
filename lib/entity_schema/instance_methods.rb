@@ -5,7 +5,7 @@ module EntitySchema
   module InstanceMethods
     def initialize(params = Undefined)
       self.class.finalize!
-      # TODO: slice by ruby version
+      # TODO: slice for ruby > 2.5.0
       @attributes_ = (params == Undefined ? {} : params.slice(*self.class.schema.keys))
       @objects_ = {}
     end
