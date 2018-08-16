@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'field_resolvers/builders/property'
+require_relative 'field_resolvers/builders/object'
 
 module EntitySchema
   # class-level methods for define schema
@@ -14,7 +15,9 @@ module EntitySchema
       property(name, opts)
     end
 
-    def object(_name, **_opts) end
+    def object(name, **opts)
+      schema.add_field name, FieldResolvers::Builders::Object.(name, schema, opts)
+    end
 
     alias has_one object
 

@@ -4,6 +4,12 @@ module EntitySchema
   module FieldResolvers
     # TODO: doc
     class Object < Abstract
+      def initialize(name, schema, src_key:, private_getter:, private_setter:, map_to:, map_method:, serialize_method:)
+        @map_to     = map_to
+        @map_method = map_method
+        super(name, schema, src_key: src_key, private_getter: private_getter, private_setter: private_setter)
+      end
+
       # mapped tuple must be only in `objects` hash
       def base_set(attributes, objects, value)
         case value
@@ -30,7 +36,7 @@ module EntitySchema
 
       private
 
-      attr_reader :serialize_method
+      attr_reader :map_to, :map_method, :serialize_method
 
       def map(tuple)
         map_to.public_send(map_method, tuple)

@@ -50,6 +50,10 @@ module EntitySchema
         attributes.key?(src_key) || objects.key?(src_key)
       end
 
+      def predicate?
+        false
+      end
+
       private
 
       attr_reader :schema, :serialize_method
