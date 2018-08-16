@@ -61,24 +61,3 @@ module EntitySchema
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
   end
 end
-
-# class Product
-#   property  :id
-#   property  :article
-#   property  :enabled
-#   property  :new?,        key: :is_new
-#   property  :sale?,       key: :is_sale
-#   property  :bestseller?, key: :is_bestseller
-#   timestamps
-
-#   object :size, map_to: Size
-
-#   belongs_to :color, { color_uid: :uid }, map_to: Color
-#   has_many   :prices,                     map_to: Prices
-#   has_many   :seasons,                    map_to: Season
-#   has_many   :materials_products,         map_to: MaterialsProduct
-
-#   def to_h
-#     properties.unwrap_objects(:to_h, seasons: :serializable_hash).to_h
-#   end
-# end
