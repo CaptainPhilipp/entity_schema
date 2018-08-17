@@ -17,12 +17,17 @@ module EntitySchema
       end
 
       def public_set(attributes, objects, value)
-        guard_public_set
+        raise_public_set if private_setter?
         private_set(attributes, objects, value)
       end
 
       def public_get(attributes, objects)
-        guard_public_get
+        raise_public_get if private_getter?
+        private_get(attributes, objects)
+      end
+
+      def weak_set(attributes, objects, value)
+        return if private_setter?
         private_get(attributes, objects)
       end
 
@@ -58,13 +63,11 @@ module EntitySchema
 
       attr_reader :schema, :serialize_method
 
-      def guard_public_set
-        return unless private_setter?
+      def raise_public_set
         raise NameError, "Private Setter called for field `#{name}` in `#{schema.owner}`"
       end
 
-      def guard_public_get
-        return unless private_getter?
+      def raise_public_get
         raise NameError, "Private Getter called for field `#{name}` in `#{schema.owner}`"
       end
 
