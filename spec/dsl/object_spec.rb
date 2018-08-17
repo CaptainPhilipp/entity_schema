@@ -34,10 +34,6 @@ RSpec.describe 'EntitySchema.object' do
       object :serialize,       map_to: CustomStruct, serialize: :serialize
       object :key_object_key,  map_to: OpenStruct, key: :object_key
       object :private_true,    map_to: OpenStruct, private: true
-      object :private_getter,  map_to: OpenStruct, private: :getter
-      object :private_setter,  map_to: OpenStruct, private: :setter
-      object :getter_private,  map_to: OpenStruct, getter: :private
-      object :setter_private,  map_to: OpenStruct, setter: :private
       object :mapper,          map_to: OpenStruct, mapper: ->(x) { x.to_h }
       object :serializer,      map_to: OpenStruct, serializer: :serialize_.to_proc
       has_one :has_one,        map_to: OpenStruct
@@ -50,11 +46,12 @@ RSpec.describe 'EntitySchema.object' do
 
   let(:entity) do
     entity_klass.new(
-      normal:     { a: 'a' },
-      map_method: { a: 'b' },
-      serialize:  { a: 'c', b: 'd' },
-      object_key: { a: 'e' },
-      has_one:    { a: 'f' }
+      normal:       { a: 'a' },
+      map_method:   { a: 'b' },
+      serialize:    { a: 'c', b: 'd' },
+      object_key:   { a: 'e' },
+      has_one:      { a: 'f' },
+      private_true: { a: 'g' }
     )
   end
 
@@ -100,11 +97,16 @@ RSpec.describe 'EntitySchema.object' do
 
   describe 'with `mapper:` option'
   describe 'with `serializer:` option'
-  describe 'with `getter: :private` option'
-  describe 'with `setter: :private` option'
-  describe 'with `private: :setter` option'
-  describe 'with `private: :getter` option'
-  describe 'with `private: true` option'
+
+  describe 'with `private: true` option' do
+    it { expect { entity.private_true }.to                    raise_error(NoMethodError) }
+    it { expect { entity.private_true = 'changed' }.to        raise_error(NoMethodError) }
+    it { expect { entity[:private_true] }.to                  raise_error(NameError, 'Private Getter called for field `private_true` in `Entity`') }
+    it { expect { entity[:private_true] = 'changed' }.to      raise_error(NameError, 'Private Setter called for field `private_true` in `Entity`') }
+    it { expect(entity.send(:private_true)).to                eq struct(a: 'g') }
+    it { expect { entity.send(:private_true=, struct(a: 'gg')) }.to change { entity.to_h[:private_true] }.from(a: 'g').to(a: 'gg') }
+    it { expect(entity.to_h[:private_true]).to                eq(a: 'g') }
+  end
 
   def struct(*opts)
     OpenStruct.new(*opts)
