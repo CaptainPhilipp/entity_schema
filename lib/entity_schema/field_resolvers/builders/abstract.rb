@@ -49,7 +49,7 @@ module EntitySchema
         end
 
         def guard_unknown_options!(opts, name)
-          raise "Unknown options given to `:#{name}`: #{opts.inspect}" if opts.any?
+          raise "Unknown options given to `#{name}:` #{opts.inspect}" if opts.any?
         end
       end
     end

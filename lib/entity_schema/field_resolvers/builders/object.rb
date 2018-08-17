@@ -20,8 +20,6 @@ module EntitySchema
           map_to_           = check! :map_to, h, [Class]
           map_method_       = check! :map_method, h, [Symbol, nil]
           serialize_method_ = check! :serialize, h, [Symbol, nil]
-          flat_serialize_   = check! :flat_serialize, h, [true, false, Symbol, nil] # TODO: реализовать
-          flat_keys_        = check! :flat_keys, h, [Array, nil] # TODO: реализовать
           serializer_       = check_ducktype! :serializer, h, [:call]
           guard_unknown_options!(h, name)
 

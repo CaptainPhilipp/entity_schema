@@ -16,7 +16,7 @@ module EntitySchema
     end
 
     def object(name, **opts)
-      schema.add_field name, FieldResolvers::Builders::Object.(name, schema, opts)
+      schema.add_object_field name, FieldResolvers::Builders::Object.(name, schema, opts)
     end
 
     alias has_one object

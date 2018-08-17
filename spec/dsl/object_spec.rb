@@ -14,8 +14,10 @@ RSpec.describe 'EntitySchema.object' do
       @custom_new_called || false
     end
 
+    alias old_to_h to_h
+
     def serialize
-      to_h.transform_keys(&:to_s)
+      old_to_h.transform_keys(&:to_s)
     end
   end
 
@@ -30,7 +32,6 @@ RSpec.describe 'EntitySchema.object' do
       object :normal,          map_to: OpenStruct
       object :map_method,      map_to: CustomStruct, map_method: :custom_new
       object :serialize,       map_to: CustomStruct, serialize: :serialize
-      object :flat_serialize,  map_to: OpenStruct, flat_serialize: :flat_serialize, flat_keys: %i[flat_a flat_b]
       object :key_object_key,  map_to: OpenStruct, key: :object_key
       object :private_true,    map_to: OpenStruct, private: true
       object :private_getter,  map_to: OpenStruct, private: :getter
@@ -51,16 +52,18 @@ RSpec.describe 'EntitySchema.object' do
     entity_klass.new(
       normal:     { a: 'a' },
       map_method: { a: 'b' },
-      serialize:  { a: 'c' },
+      serialize:  { a: 'c', b: 'd' },
+      object_key: { a: 'e' },
+      has_one:    { a: 'f' }
     )
   end
 
   describe 'without options' do
-    it { expect(entity.normal).to                  eq struct(a: 'a') }
+    it { expect(entity.normal).to                         eq struct(a: 'a') }
     it { expect { entity.normal   = { a: 'changed' } }.to change { entity[:normal] }.from(struct(a: 'a')).to(struct(a: 'changed')) }
-    it { expect(entity[:normal]).to                eq struct(a: 'a') }
+    it { expect(entity[:normal]).to                       eq struct(a: 'a') }
     it { expect { entity[:normal] = { a: 'changed' } }.to change { entity.normal }.from(struct(a: 'a')).to(struct(a: 'changed')) }
-    it { expect(entity.to_h[:normal]).to           eq(a: 'a') }
+    it { expect(entity.to_h[:normal]).to                  eq(a: 'a') }
   end
 
   describe 'with `map_method:` option' do
@@ -69,24 +72,39 @@ RSpec.describe 'EntitySchema.object' do
   end
 
   describe 'with `serialize:` option' do
-    before { allow_any_instance_of(CustomStruct).to receive(:to_h).and_return { raise } }
-    it { expect(entity.to_h[:serialize]).to eq a: 'c' }
+    before { entity.serialize } # lazy mapping
+
+    it { expect(entity.to_h[:serialize]).to eq 'a' => 'c', 'b' => 'd' }
   end
 
-  describe 'with `flat_serialize:` option' do
+  describe 'with `flat_serialize:` and `flat_keys:` option' do
     before { skip 'TODO' }
     it { expect(entity.to_h).to include serialize_a: 'd', serialize_b: 'e' }
   end
 
-  describe 'with `key:` option'
+  describe 'with `key:` option' do
+    it { expect(entity.key_object_key).to                         eq struct(a: 'e') }
+    it { expect { entity.key_object_key   = { a: 'changed' } }.to change { entity[:key_object_key] }.from(struct(a: 'e')).to(struct(a: 'changed')) }
+    it { expect(entity[:key_object_key]).to                       eq struct(a: 'e') }
+    it { expect { entity[:key_object_key] = { a: 'changed' } }.to change { entity.key_object_key }.from(struct(a: 'e')).to(struct(a: 'changed')) }
+    it { expect(entity.to_h[:object_key]).to                      eq(a: 'e') }
+  end
+
+  describe 'has_one, without options' do
+    it { expect(entity.has_one).to                         eq struct(a: 'f') }
+    it { expect { entity.has_one   = { a: 'changed' } }.to change { entity[:has_one] }.from(struct(a: 'f')).to(struct(a: 'changed')) }
+    it { expect(entity[:has_one]).to                       eq struct(a: 'f') }
+    it { expect { entity[:has_one] = { a: 'changed' } }.to change { entity.has_one }.from(struct(a: 'f')).to(struct(a: 'changed')) }
+    it { expect(entity.to_h[:has_one]).to                  eq(a: 'f') }
+  end
+
+  describe 'with `mapper:` option'
+  describe 'with `serializer:` option'
   describe 'with `getter: :private` option'
   describe 'with `setter: :private` option'
   describe 'with `private: :setter` option'
   describe 'with `private: :getter` option'
   describe 'with `private: true` option'
-  describe 'with `mapper:` option'
-  describe 'with `serializer:` option'
-  describe 'has_one, without options'
 
   def struct(*opts)
     OpenStruct.new(*opts)
