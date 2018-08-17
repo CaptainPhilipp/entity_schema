@@ -34,8 +34,6 @@ RSpec.describe 'EntitySchema.object' do
       object :serialize,       map_to: CustomStruct, serialize: :serialize
       object :key_object_key,  map_to: OpenStruct, key: :object_key
       object :private_true,    map_to: OpenStruct, private: true
-      object :mapper,          map_to: OpenStruct, mapper: ->(x) { x.to_h }
-      object :serializer,      map_to: OpenStruct, serializer: :serialize_.to_proc
       has_one :has_one,        map_to: OpenStruct
 
       def self.serialize(input)
@@ -74,11 +72,6 @@ RSpec.describe 'EntitySchema.object' do
     it { expect(entity.to_h[:serialize]).to eq 'a' => 'c', 'b' => 'd' }
   end
 
-  describe 'with `flat_serialize:` and `flat_keys:` option' do
-    before { skip 'TODO' }
-    it { expect(entity.to_h).to include serialize_a: 'd', serialize_b: 'e' }
-  end
-
   describe 'with `key:` option' do
     it { expect(entity.key_object_key).to                         eq struct(a: 'e') }
     it { expect { entity.key_object_key   = { a: 'changed' } }.to change { entity[:key_object_key] }.from(struct(a: 'e')).to(struct(a: 'changed')) }
@@ -94,9 +87,6 @@ RSpec.describe 'EntitySchema.object' do
     it { expect { entity[:has_one] = { a: 'changed' } }.to change { entity.has_one }.from(struct(a: 'f')).to(struct(a: 'changed')) }
     it { expect(entity.to_h[:has_one]).to                  eq(a: 'f') }
   end
-
-  describe 'with `mapper:` option'
-  describe 'with `serializer:` option'
 
   describe 'with `private: true` option' do
     it { expect { entity.private_true }.to                    raise_error(NoMethodError) }
