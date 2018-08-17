@@ -12,14 +12,15 @@ module EntitySchema
 
         def call(name, schema, options)
           h = options.dup
-          key_              = check_type! :key, h, [Symbol, NilClass]
+          key_              = check! :key, h, [Symbol, nil]
           getter_           = check! :getter, h, [:private, nil]
           setter_           = check! :setter, h, [:private, nil]
           private_          = check! :private, h, [true, false, :getter, :setter, nil]
           mapper_           = check_ducktype! :mapper, h, [:call]
-          map_to_           = check_type! :map_to, h, [Class]
-          map_method_       = check_type! :map_method, h, [Symbol, NilClass]
-          serialize_method_ = check_type! :serialize, h, [Symbol, NilClass]
+          map_to_           = check! :map_to, h, [Class]
+          map_method_       = check! :map_method, h, [Symbol, nil]
+          serialize_method_ = check! :serialize, h, [Symbol, nil]
+          flat_serialize_   = check! :flat_serialize, h, [true, false, Symbol, nil]
           serializer_       = check_ducktype! :serializer, h, [:call]
 
           FieldResolvers::Object.new(

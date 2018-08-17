@@ -4,13 +4,17 @@ require 'ostruct'
 
 RSpec.describe 'EntitySchema.object()' do
   let(:entity_klass) do
-    CustomStruct ||= Struct.new(:x) do
+    CustomStruct ||= Struct.new(:a, :b) do
       def self.wrap(input)
         input.is_a?(self) ? input : new(input)
       end
 
-      def serializable_hash
+      def serialize
         to_h.transform_keys(&:to_s)
+      end
+
+      def flat_serialize
+        { serialize_a: a, serialize_b: b }
       end
     end
 
@@ -21,18 +25,20 @@ RSpec.describe 'EntitySchema.object()' do
         'Entity'
       end
 
-      object :normal,         map_to: OpenStruct
-      object :map_method,     map_to: CustomStruct, map_method: :wrap
-      object :serialize,      map_to: CustomStruct, serialize: :serializable_hash
-      object :key_object_key, map_to: OpenStruct, key: :object_key
-      object :getter_private, map_to: OpenStruct, getter: :private
-      object :setter_private, map_to: OpenStruct, setter: :private
-      object :private_getter, map_to: OpenStruct, private: :getter
-      object :private_setter, map_to: OpenStruct, private: :setter
-      object :private_true,   map_to: OpenStruct, private: true
-      object :mapper,         map_to: OpenStruct, mapper: ->(x) { x.to_h }
-      object :serializer,     map_to: OpenStruct, serializer: :serialize_.to_proc
-      has_one :has_one,       map_to: OpenStruct
+      object :normal,          map_to: OpenStruct
+      object :map_method,      map_to: CustomStruct, map_method: :wrap
+      object :serialize,       map_to: CustomStruct, serialize: :serialize
+      object :flat_serialize,  map_to: CustomStruct, flat_serialize: :flat_serialize
+      object :flat_serialize2, map_to: CustomStruct, flat_serialize: :flat_serialize
+      object :key_object_key,  map_to: OpenStruct, key: :object_key
+      object :private_true,    map_to: OpenStruct, private: true
+      object :private_getter,  map_to: OpenStruct, private: :getter
+      object :private_setter,  map_to: OpenStruct, private: :setter
+      object :getter_private,  map_to: OpenStruct, getter: :private
+      object :setter_private,  map_to: OpenStruct, setter: :private
+      object :mapper,          map_to: OpenStruct, mapper: ->(x) { x.to_h }
+      object :serializer,      map_to: OpenStruct, serializer: :serialize_.to_proc
+      has_one :has_one,        map_to: OpenStruct
 
       def self.serialize(input)
         input.to_h

@@ -17,14 +17,10 @@ module EntitySchema
 
         def check!(key, h, allowed)
           value = h.delete(key)
-          return value if allowed.include?(value)
+          return value if allowed.any? do |v|
+            v.is_a?(Class) ? value.is_a?(v) : value == v
+          end
           raise ArgumentError, "option `#{key}:` must be in #{allowed}, but '#{value}'"
-        end
-
-        def check_type!(key, h, types)
-          value = h.delete(key)
-          return value if types.any? { |t| value.is_a?(t) }
-          raise ArgumentError, "option `#{key}:` must has one of types #{types}, but is a #{value.class}"
         end
 
         def check_ducktype!(key, h, methods)

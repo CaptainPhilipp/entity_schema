@@ -12,11 +12,11 @@ module EntitySchema
 
         def call(name, schema, options)
           h = options.dup
-          key_            = check_type! :key, h, [Symbol, NilClass]
-          getter_         = check! :getter, h, [:private, nil]
-          setter_         = check! :setter, h, [:private, nil]
-          private_        = check! :private, h, [true, false, :getter, :setter, nil]
-          predicate_      = check! :predicate, h, [true, false, nil]
+          key_       = check! :key, h, [Symbol, nil]
+          getter_    = check! :getter, h, [:private, nil]
+          setter_    = check! :setter, h, [:private, nil]
+          private_   = check! :private, h, [true, false, :getter, :setter, nil]
+          predicate_ = check! :predicate, h, [true, false, nil]
 
           FieldResolvers::Property.new(
             name,
