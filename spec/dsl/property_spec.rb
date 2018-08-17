@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'EntitySchema.property()' do
+RSpec.describe 'EntitySchema.property' do
   let(:entity_klass) do
     Class.new do
       extend EntitySchema

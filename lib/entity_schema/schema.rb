@@ -40,7 +40,7 @@ module EntitySchema
 
     def set(attributes, objects, name, value)
       guard_unknown_field(name)
-      all_fields[name]&.public_set(attributes, objects, value)
+      all_fields[name].public_set(attributes, objects, value)
     end
 
     def weak_set(attributes, objects, name, value)

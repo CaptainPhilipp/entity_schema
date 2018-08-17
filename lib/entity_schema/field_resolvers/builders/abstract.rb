@@ -20,7 +20,7 @@ module EntitySchema
           return value if allowed.any? do |v|
             v.is_a?(Class) ? value.is_a?(v) : value == v
           end
-          raise ArgumentError, "option `#{key}:` must be in #{allowed}, but '#{value}'"
+          raise ArgumentError, "option `#{key}:` must be in #{allowed}, but '#{value.inspect}'"
         end
 
         def check_ducktype!(key, h, methods)
@@ -35,6 +35,13 @@ module EntitySchema
 
         def true_(value)
           value == true ? true : nil
+        end
+
+        def not_bool(value)
+          case value
+          when true, false then nil
+          else value
+          end
         end
 
         def to_bool(value)
