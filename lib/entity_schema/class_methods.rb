@@ -16,17 +16,17 @@ module EntitySchema
       schema.deep_freeze
       schema.fields_list.each do |field|
         getter = field.name
-        define_method(getter) { field.base_get(@raw_attributes_, @mapped_attributes_) }
+        define_method(getter) { field.private_get(@raw_attributes_, @mapped_attributes_) }
         private(getter) if field.private_getter?
 
         if field.predicate?
           predicate = :"#{field.name}?"
-          define_method(predicate) { field.base_get(@raw_attributes_, @mapped_attributes_) }
+          define_method(predicate) { field.private_get(@raw_attributes_, @mapped_attributes_) }
           private(predicate) if field.private_getter?
         end
 
         setter = :"#{field.name}="
-        define_method(setter) { |input| field.base_set(@raw_attributes_, @mapped_attributes_, input) }
+        define_method(setter) { |input| field.private_set(@raw_attributes_, @mapped_attributes_, input) }
         private(setter) if field.private_setter?
       end
     end

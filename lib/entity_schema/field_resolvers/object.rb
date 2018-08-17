@@ -11,7 +11,7 @@ module EntitySchema
       end
 
       # mapped tuple must be only in `objects` hash
-      def base_set(attributes, objects, value)
+      def private_set(attributes, objects, value)
         case value
         when map_to
           delete(attributes)
@@ -25,7 +25,7 @@ module EntitySchema
 
       # mapped tuple must be only in `objects` hash
       # prioritized operation - read once. in this case #delete will be called each time
-      def base_get(attributes, objects)
+      def private_get(attributes, objects)
         tuple = delete(attributes)
         tuple.nil? ? read(objects) : write(objects, map(tuple))
       end

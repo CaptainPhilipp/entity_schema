@@ -13,13 +13,13 @@ module EntitySchema
       end
 
       def fk_changed(new_fk, objects)
-        object    = object_field.base_get(objects)
+        object    = object_field.private_get(objects)
         object_pk = object&.public_send(object_pk)
-        object_field.base_set(objects, nil, notify: false) if object_pk != new_fk
+        object_field.private_set(objects, nil, notify: false) if object_pk != new_fk
       end
 
       def object_changed(new_object, objects)
-        fk_field.base_set(objects, new_object.public_send(object_pk), notify: false)
+        fk_field.private_set(objects, new_object.public_send(object_pk), notify: false)
       end
     end
   end

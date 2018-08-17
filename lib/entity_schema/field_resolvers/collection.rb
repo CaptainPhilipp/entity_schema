@@ -5,7 +5,7 @@ module EntitySchema
     # TODO: doc
     class Collection < Object
       # mapped tuple must be only in `objects` hash
-      def base_set(attributes, objects, values)
+      def private_set(attributes, objects, values)
         value = values.first
         case value
         when map_to
@@ -19,7 +19,7 @@ module EntitySchema
       end
 
       # ? what if entity initialized with object, not with tuple? is it invalid, or we must wrap or analize input?
-      def base_get(attributes, objects)
+      def private_get(attributes, objects)
         tuple = delete(attributes)
         tuple.nil? ? read(objects) : write(objects, map(tuple))
       end

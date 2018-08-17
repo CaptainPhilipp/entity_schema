@@ -18,23 +18,23 @@ module EntitySchema
 
       def public_set(attributes, objects, value)
         guard_public_set
-        base_set(attributes, objects, value)
+        private_set(attributes, objects, value)
       end
 
       def public_get(attributes, objects)
         guard_public_get
-        base_get(attributes, objects)
+        private_get(attributes, objects)
       end
 
       def remove(attributes, objects)
         delete(attributes) || delete(objects)
       end
 
-      def base_set(_attributes, _objects, _value)
+      def private_set(_attributes, _objects, _value)
         raise NotImplementedError
       end
 
-      def base_get(_attributes, _objects)
+      def private_get(_attributes, _objects)
         raise NotImplementedError
       end
 
