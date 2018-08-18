@@ -19,10 +19,6 @@ module EntitySchema
         @ivar_name      = :"@#{name}"
       end
 
-      def src_keys
-        @src_keys ||= [src_key].freeze
-      end
-
       # set from public caller
       def public_set(obj, value)
         raise_public_set if private_setter?

@@ -7,8 +7,9 @@ module EntitySchema
       update_attributes(params)
     end
 
+    # TODO: spec
     def update_attributes(params)
-      params.each_pair { |key, value| self.class.schema.set_by_key(self, key, value) }
+      self.class.schema.set_from_params(self, params)
     end
 
     def set(name, value)

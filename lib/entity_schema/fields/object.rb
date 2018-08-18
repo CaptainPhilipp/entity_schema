@@ -14,8 +14,7 @@ module EntitySchema
 
       def get(obj)
         value = read(obj)
-        return value unless value.is_a?(Hash)
-        write(obj, map(value))
+        value.is_a?(Hash) ? write(obj, map(value)) : value
       end
 
       def serialize(obj, output)

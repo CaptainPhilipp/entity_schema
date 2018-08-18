@@ -30,8 +30,8 @@ module EntitySchema
       freeze
     end
 
-    def set_by_key(obj, key, value)
-      fields_by_key[key]&.set(obj, value)
+    def set_from_params(obj, params)
+      params.each { |key, value| fields_by_key[key]&.set(obj, value) }
     end
 
     def public_set(obj, name, value)
@@ -59,10 +59,6 @@ module EntitySchema
 
     def weak_given?(obj, name)
       fields[name]&.given?(obj)
-    end
-
-    def src_keys
-      fields.values.map(&:src_key)
     end
 
     private
