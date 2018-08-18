@@ -3,45 +3,40 @@
 module EntitySchema
   # TODO: doc
   module InstanceMethods
-    def initialize(params = Undefined)
-      self.class.finalize!
-      # TODO: change slice for ruby < 2.5.0
-      @raw_attributes_ = (params == Undefined ? {} : params.slice(*self.class.schema.src_keys))
-      @mapped_attributes_ = {}
+    def initialize(params = EMPTY_HASH)
+      update_attributes(params)
     end
 
     def update_attributes(params)
-      params.each_pair do |attr, value|
-        self.class.schema.weak_set(@raw_attributes_, @mapped_attributes_, key, value)
-      end
+      params.each_pair { |key, value| self.class.schema.set_by_key(self, key, value) }
     end
 
-    def get(key)
-      self.class.schema.get(@raw_attributes_, @mapped_attributes_, key)
-    end
-
-    alias [] get
-
-    def set(key, value)
-      self.class.schema.set(@raw_attributes_, @mapped_attributes_, key, value)
+    def set(name, value)
+      self.class.schema.public_set(self, name, value)
     end
 
     alias []= set
+
+    def get(name)
+      self.class.schema.public_get(self, name)
+    end
+
+    alias [] get
 
     def field?(name)
       self.class.schema.field?(name)
     end
 
     def given?(name)
-      self.class.schema.given?(@raw_attributes_, @mapped_attributes_, name)
+      self.class.schema.given?(self, name)
     end
 
     def key?(name)
-      self.class.schema.weak_given?(@raw_attributes_, @mapped_attributes_, name)
+      self.class.schema.weak_given?(self, name)
     end
 
     def to_h
-      self.class.schema.serialize(@raw_attributes_, @mapped_attributes_)
+      self.class.schema.serialize(self)
     end
   end
 end

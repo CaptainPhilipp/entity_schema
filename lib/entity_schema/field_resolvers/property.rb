@@ -15,12 +15,8 @@ module EntitySchema
         @predicate
       end
 
-      def private_set(attributes, _objects, value)
-        write(attributes, value)
-      end
-
-      def private_get(attributes, _objects)
-        read(attributes)
+      def get(obj)
+        read(obj)
       end
     end
   end

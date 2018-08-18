@@ -7,78 +7,72 @@ module EntitySchema
 
     def initialize(owner)
       @owner = owner
-      @all_fields = {}
-      @object_fields = {}
+      @fields = {}
+      @fields_by_key = {}
     end
 
     def extends(src)
-      @all_fields = extract_schema(src).fields.merge(fields)
+      @fields = extract_schema(src).fields.merge(fields)
       self
     end
 
-    def add_field(name, field)
-      all_fields[name] = field
+    def add_field(field)
+      fields[field.name]           = field
+      fields_by_key[field.src_key] = field
     end
 
-    def add_object_field(name, field)
-      all_fields[name] = field
-      object_fields[name] = field
-    end
-
+    # TODO: use it
     def deep_freeze
-      all_fields.each do |name, field|
+      fields.each do |name, field|
         name.freeze
         field.freeze
       end.freeze
       freeze
     end
 
-    def get(attributes, objects, name)
-      guard_unknown_field(name)
-      all_fields[name].public_get(attributes, objects)
+    def set_by_key(obj, key, value)
+      fields_by_key[key]&.set(obj, value)
     end
 
-    def set(attributes, objects, name, value)
-      guard_unknown_field(name)
-      all_fields[name].public_set(attributes, objects, value)
+    def public_set(obj, name, value)
+      guard_unknown_field!(name)
+      fields[name].public_set(obj, value)
     end
 
-    def weak_set(attributes, objects, name, value)
-      all_fields[name]&.weak_set(attributes, objects, value)
+    def public_get(obj, name)
+      guard_unknown_field!(name)
+      fields[name].public_get(obj)
     end
 
-    def serialize(attributes, objects)
-      attributes.dup.tap do |output|
-        objects.each_key do |key|
-          object_fields[key]&.serialize(output, objects)
-        end
-      end
-    end
-
-    def fields_list
-      all_fields.values
+    def serialize(obj)
+      fields.values.each_with_object({}) { |field, output| field.serialize(obj, output) }
     end
 
     def field?(name)
-      all_fields.key?(name)
+      fields.key?(name)
     end
 
-    def given?(attributes, objects, name)
-      guard_unknown_field(name)
-      all_fields[name].given?(attributes, objects)
+    def given?(obj, name)
+      guard_unknown_field!(name)
+      fields[name].given?(obj)
     end
 
-    def weak_given?(attributes, objects, name)
-      all_fields[name]&.given?(attributes, objects)
+    def weak_given?(obj, name)
+      fields[name]&.given?(obj)
     end
 
     def src_keys
-      all_fields.values.map(&:src_key)
+      fields.values.map(&:src_key)
     end
 
     private
 
-    attr_reader :all_fields, :object_fields
+    attr_reader :fields, :fields_by_key
+
+    def guard_unknown_field!(name)
+      return if field?(name)
+      raise NameError, "Unknown field '#{name}' for `#{owner}`"
+    end
 
     def extract_schema(input)
       case input
@@ -86,12 +80,6 @@ module EntitySchema
       when input.respond_to?(:schema) then input.schema
       else raise ArgumentError
       end
-    end
-
-    def guard_unknown_field(name)
-      return if field?(name)
-
-      raise NameError, "Unknown field '#{name}' for `#{owner}`"
     end
   end
 end

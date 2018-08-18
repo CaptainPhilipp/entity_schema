@@ -2,7 +2,6 @@
 
 module EntitySchema
   module FieldResolvers
-    # Abstract field
     class Abstract
       attr_reader :src_key, :name
 
@@ -14,34 +13,73 @@ module EntitySchema
         @src_key        = src_key
         @private_getter = private_getter
         @private_setter = private_setter
+
+        @predicate_name = :"#{name}?"
+        @setter_name    = :"#{name}="
+        @ivar_name      = :"@#{name}"
       end
 
-      def public_set(attributes, objects, value)
+      def setup_field(klass)
+        remove_field(klass)
+
+        field = self
+
+        klass.define_method(name) { field.get(self) }
+        klass.send(:private, name) if private_getter? # TODO: rm #send
+
+        if predicate?
+          klass.define_method(predicate_name) { field.get(self) }
+          klass.send(:private, predicate_name) if private_getter?
+        end
+
+        klass.define_method(setter_name) { |value| field.set(self, value) }
+        klass.send(:private, setter_name) if private_setter?
+      end
+
+      def remove_field(klass)
+        klass.remove_method(name)           if klass.method_defined?(name)
+        klass.remove_method(predicate_name) if klass.method_defined?(predicate_name)
+        klass.remove_method(setter_name)    if klass.method_defined?(setter_name)
+      end
+
+      # set from public caller
+      def public_set(obj, value)
         raise_public_set if private_setter?
-        private_set(attributes, objects, value)
+        set(obj, value)
       end
 
-      def public_get(attributes, objects)
+      def public_get(obj)
         raise_public_get if private_getter?
-        private_get(attributes, objects)
+        get(obj)
       end
 
-      def weak_set(attributes, objects, value)
-        return if private_setter?
-        private_get(attributes, objects)
+      def given?(obj)
+        obj.instance_variable_defined?(ivar_name)
       end
 
-      def remove(attributes, objects)
-        delete(attributes) || delete(objects)
+      def delete(obj)
+        obj.remove_instance_variable(ivar_name)
       end
 
-      def private_set(_attributes, _objects, _value)
+      def set(obj, value)
+        write(obj, value)
+      end
+
+      def get(_obj)
         raise NotImplementedError
       end
 
-      def private_get(_attributes, _objects)
-        raise NotImplementedError
+      def predicate?
+        false
       end
+
+      def serialize(obj, output)
+        output[src_key] = read(obj) if given?(obj)
+      end
+
+      private
+
+      attr_reader :schema, :serialize_method, :predicate_name, :setter_name, :ivar_name
 
       def private_getter?
         @private_getter
@@ -51,18 +89,6 @@ module EntitySchema
         @private_setter
       end
 
-      def given?(attributes, objects)
-        attributes.key?(src_key) || objects.key?(src_key)
-      end
-
-      def predicate?
-        false
-      end
-
-      private
-
-      attr_reader :schema, :serialize_method
-
       def raise_public_set
         raise NameError, "Private Setter called for field `#{name}` in `#{schema.owner}`"
       end
@@ -71,16 +97,12 @@ module EntitySchema
         raise NameError, "Private Getter called for field `#{name}` in `#{schema.owner}`"
       end
 
-      def read(storage)
-        storage[src_key]
+      def read(obj)
+        obj.instance_variable_get(ivar_name)
       end
 
-      def write(storage, value)
-        storage[src_key] = value
-      end
-
-      def delete(attributes)
-        attributes.delete(src_key)
+      def write(obj, value)
+        obj.instance_variable_set(ivar_name, value)
       end
     end
   end

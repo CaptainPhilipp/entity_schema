@@ -10,6 +10,7 @@ require 'entity_schema/schema'
 
 module EntitySchema
   Undefined = :undefined
+  EMPTY_HASH = {}.freeze # TODO: EMPTY_HASH from Dry Core
 
   def self.extended(base)
     base.extend ClassMethods

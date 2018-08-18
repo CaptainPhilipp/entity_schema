@@ -7,7 +7,7 @@ module EntitySchema
   # class-level methods for define schema
   module Dsl
     def property(name, **opts)
-      schema.add_field name, FieldResolvers::Builders::Property.(name, schema, opts)
+      setup_field FieldResolvers::Builders::Property.(name, schema, opts)
     end
 
     def property?(name, **opts)
@@ -16,7 +16,7 @@ module EntitySchema
     end
 
     def object(name, **opts)
-      schema.add_object_field name, FieldResolvers::Builders::Object.(name, schema, opts)
+      setup_field FieldResolvers::Builders::Object.(name, schema, opts)
     end
 
     alias has_one object
@@ -26,5 +26,12 @@ module EntitySchema
     def collection(_name, **_opts) end
 
     alias has_many collection
+
+    private
+
+    def setup_field(field)
+      field.setup_field(self)
+      schema.add_field field
+    end
   end
 end
