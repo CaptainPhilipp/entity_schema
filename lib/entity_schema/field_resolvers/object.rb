@@ -4,6 +4,7 @@ module EntitySchema
   module FieldResolvers
     # TODO: doc
     class Object < Abstract
+      # TODO: simplify #initialize signature
       def initialize(name, schema, src_key:, private_getter:, private_setter:, map_to:, map_method:, serialize_method:)
         @map_to           = map_to
         @map_method       = map_method
@@ -11,28 +12,16 @@ module EntitySchema
         super(name, schema, src_key: src_key, private_getter: private_getter, private_setter: private_setter)
       end
 
-      # mapped tuple must be only in `objects` hash
-      def private_set(attributes, objects, value)
-        case value
-        when map_to
-          delete(attributes)
-          write(objects, value)
-        when Hash
-          delete(objects)
-          write(attributes, value)
-        else raise ArumentError, "Value (#{value}) should be `#{map_to}` or `Hash`"
-        end
+      def get(obj)
+        value = read(obj)
+        return value unless value.is_a?(Hash)
+        write(obj, map(value))
       end
 
-      # mapped tuple must be only in `objects` hash
-      # prioritized operation - read once. in this case #delete will be called each time
-      def private_get(attributes, objects)
-        tuple = delete(attributes)
-        tuple.nil? ? read(objects) : write(objects, map(tuple))
-      end
-
-      def serialize(attributes, objects)
-        write(attributes, read(objects).public_send(serialize_method))
+      def serialize(obj, output)
+        value = read(obj)
+        return output[src_key] = value if value.is_a?(Hash)
+        output[src_key] = value.public_send(serialize_method)
       end
 
       private
@@ -41,10 +30,6 @@ module EntitySchema
 
       def map(tuple)
         map_to.public_send(map_method, tuple)
-      end
-
-      def delete(attributes)
-        attributes.delete(src_key)
       end
     end
   end
