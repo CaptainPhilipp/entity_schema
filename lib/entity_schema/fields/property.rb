@@ -3,7 +3,7 @@
 require_relative 'abstract'
 
 module EntitySchema
-  module FieldResolvers
+  module Fields
     # TODO: doc
     class Property < Abstract
       def initialize(name, schema, src_key:, private_getter:, private_setter:, predicate:)

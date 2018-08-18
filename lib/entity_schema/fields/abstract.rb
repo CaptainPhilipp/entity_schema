@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  module FieldResolvers
+  module Fields
     class Abstract
       attr_reader :src_key, :name, :predicate_name, :setter_name, :ivar_name
 

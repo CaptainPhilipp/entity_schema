@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  module FieldResolvers
+  module Fields
     # Withoutfk
     class ObjectBelongsTo < Object
       attr_accessor :observer_belongs_to

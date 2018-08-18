@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  module FieldResolvers
+  module Fields
     # TODO: doc
     class Collection < Object
       # mapped tuple must be only in `objects` hash

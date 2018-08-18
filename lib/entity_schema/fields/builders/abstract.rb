@@ -3,7 +3,7 @@
 require_relative '../property'
 
 module EntitySchema
-  module FieldResolvers
+  module Fields
     # Abstract field
     module Builders
       class Abstract

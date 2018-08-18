@@ -4,7 +4,7 @@ require_relative 'abstract'
 require_relative '../property'
 
 module EntitySchema
-  module FieldResolvers
+  module Fields
     # Abstract field
     module Builders
       class Property < Abstract
@@ -18,7 +18,7 @@ module EntitySchema
           private_   = check! :private, h, [true, false, :getter, :setter, nil]
           predicate_ = check! :predicate, h, [true, false, nil]
 
-          FieldResolvers::Property.new(
+          Fields::Property.new(
             name,
             schema,
             src_key:        first_of(key_, name),

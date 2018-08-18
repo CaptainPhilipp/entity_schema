@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  module FieldResolvers
+  module Fields
     # TODO: doc
     class Object < Abstract
       # TODO: simplify #initialize signature

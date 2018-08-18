@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'field_resolvers/builders/property'
-require_relative 'field_resolvers/builders/object'
+require_relative 'fields/builders/property'
+require_relative 'fields/builders/object'
 require_relative 'dsl_helper'
 
 
@@ -11,7 +11,7 @@ module EntitySchema
     include DslHelper
 
     def property(name, **opts)
-      setup_field FieldResolvers::Builders::Property.(name, schema, opts)
+      setup_field Fields::Builders::Property.(name, schema, opts)
     end
 
     def property?(name, **opts)
@@ -20,7 +20,7 @@ module EntitySchema
     end
 
     def object(name, **opts)
-      setup_field FieldResolvers::Builders::Object.(name, schema, opts)
+      setup_field Fields::Builders::Object.(name, schema, opts)
     end
 
     alias has_one object

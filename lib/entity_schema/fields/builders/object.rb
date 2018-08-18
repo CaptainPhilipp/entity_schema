@@ -4,7 +4,7 @@ require_relative 'abstract'
 require_relative '../object'
 
 module EntitySchema
-  module FieldResolvers
+  module Fields
     # Abstract field
     module Builders
       class Object < Abstract
@@ -23,7 +23,7 @@ module EntitySchema
           serializer_       = check_ducktype! :serializer, h, [:call]
           guard_unknown_options!(h, name)
 
-          FieldResolvers::Object.new(
+          Fields::Object.new(
             name,
             schema,
             src_key:          first_of(key_, name),
