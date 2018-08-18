@@ -3,7 +3,7 @@
 module EntitySchema
   module FieldResolvers
     class Abstract
-      attr_reader :src_key, :name
+      attr_reader :src_key, :name, :predicate_name, :setter_name, :ivar_name
 
       # TODO: simplify #initialize signature in all ancestors
       # def initialize(name, schema, **params)
@@ -19,27 +19,8 @@ module EntitySchema
         @ivar_name      = :"@#{name}"
       end
 
-      def setup_field(klass)
-        remove_field(klass)
-
-        field = self
-
-        klass.define_method(name) { field.get(self) }
-        klass.send(:private, name) if private_getter? # TODO: rm #send
-
-        if predicate?
-          klass.define_method(predicate_name) { field.get(self) }
-          klass.send(:private, predicate_name) if private_getter?
-        end
-
-        klass.define_method(setter_name) { |value| field.set(self, value) }
-        klass.send(:private, setter_name) if private_setter?
-      end
-
-      def remove_field(klass)
-        klass.remove_method(name)           if klass.method_defined?(name)
-        klass.remove_method(predicate_name) if klass.method_defined?(predicate_name)
-        klass.remove_method(setter_name)    if klass.method_defined?(setter_name)
+      def src_keys
+        @src_keys ||= [src_key].freeze
       end
 
       # set from public caller
@@ -77,10 +58,6 @@ module EntitySchema
         output[src_key] = read(obj) if given?(obj)
       end
 
-      private
-
-      attr_reader :schema, :serialize_method, :predicate_name, :setter_name, :ivar_name
-
       def private_getter?
         @private_getter
       end
@@ -88,6 +65,10 @@ module EntitySchema
       def private_setter?
         @private_setter
       end
+
+      private
+
+      attr_reader :schema, :serialize_method
 
       def raise_public_set
         raise NameError, "Private Setter called for field `#{name}` in `#{schema.owner}`"

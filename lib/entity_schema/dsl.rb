@@ -2,10 +2,14 @@
 
 require_relative 'field_resolvers/builders/property'
 require_relative 'field_resolvers/builders/object'
+require_relative 'dsl_helper'
+
 
 module EntitySchema
   # class-level methods for define schema
   module Dsl
+    include DslHelper
+
     def property(name, **opts)
       setup_field FieldResolvers::Builders::Property.(name, schema, opts)
     end
@@ -26,12 +30,5 @@ module EntitySchema
     def collection(_name, **_opts) end
 
     alias has_many collection
-
-    private
-
-    def setup_field(field)
-      field.setup_field(self)
-      schema.add_field field
-    end
   end
 end
