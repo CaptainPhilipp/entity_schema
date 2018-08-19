@@ -32,12 +32,12 @@ module EntitySchema
             serialize_method: serialize_method_ || :to_h,
           )
         end
-      end
 
-      private
+        private
 
-      def field_klass
-        Fields::Object
+        def field_klass
+          Fields::Object
+        end
       end
     end
   end

@@ -69,7 +69,7 @@ RSpec.describe 'EntitySchema.collection' do
   describe 'with `serialize:` option' do
     before { entity.serialize } # lazy mapping
 
-    it { expect(entity.to_h[:serialize]).to eq ['a' => 'c', 'b' => 'd'] }
+    it { expect(entity.to_h[:serialize]).to eq [{ 'a' => 'c', 'b' => nil }, { 'a' => nil, 'b' => 'd' }] }
   end
 
   describe 'with `key:` option' do
