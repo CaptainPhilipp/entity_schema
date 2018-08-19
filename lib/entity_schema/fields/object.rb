@@ -4,12 +4,12 @@ module EntitySchema
   module Fields
     # TODO: doc
     class Object < Abstract
-      # TODO: simplify #initialize signature
-      def initialize(name, schema, src_key:, private_getter:, private_setter:, map_to:, map_method:, serialize_method:)
-        @map_to           = map_to
-        @map_method       = map_method
-        @serialize_method = serialize_method
-        super(name, schema, src_key: src_key, private_getter: private_getter, private_setter: private_setter)
+      def initialize(name, schema, options)
+        @map_to           = options.delete(:map_to)
+        @map_method       = options.delete(:map_method)
+        @serialize_method = options.delete(:serialize_method)
+        super(name, schema, options)
+        guard_unknown_options!(options)
       end
 
       def get(obj)

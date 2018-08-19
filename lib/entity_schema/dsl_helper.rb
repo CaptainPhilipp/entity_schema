@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module EntitySchema
+  # TODO: remove this shit
   # TODO: doc
   module DslHelper
     def setup_field(field)

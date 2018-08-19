@@ -1,0 +1,56 @@
+Metrics/LineLength:
+  Max: 95
+  IgnoredPatterns:
+    - '^ *#.*$'
+
+Naming/UncommunicativeMethodParamName:
+  AllowedNames: io, id, to, by, on, in, at, fk, pk
+
+Style/LambdaCall:
+  Enabled: false
+
+Naming/ConstantName:
+  Exclude:
+    - 'lib/entity_schema.rb'
+
+Style/Documentation:
+  Exclude:
+    - 'lib/entity_schema.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'entity_schema.gemspec'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'lib/entity_schema/dsl_helper.rb'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'lib/entity_schema/dsl_helper.rb'
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'lib/entity_schema/dsl_helper.rb'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'lib/entity_schema/dsl_helper.rb'
+
+Style/Documentation:
+  Exclude:
+    - 'lib/entity_schema.rb'
+    - 'lib/entity_schema/class_methods.rb'
+    - 'lib/entity_schema/dsl_helper.rb'
+    - 'lib/entity_schema/fields/abstract.rb'
+    - 'lib/entity_schema/fields/builders/abstract.rb'
+    - 'lib/entity_schema/fields/builders/belongs_to.rb'
+    - 'lib/entity_schema/fields/builders/collection.rb'
+    - 'lib/entity_schema/fields/builders/fk_belongs_to.rb'
+    - 'lib/entity_schema/fields/builders/object.rb'
+    - 'lib/entity_schema/fields/builders/object_belongs_to.rb'
+    - 'lib/entity_schema/fields/builders/property.rb'
+    - 'lib/entity_schema/fields/collection.rb'
+    - 'lib/entity_schema/fields/object.rb'
+    - 'lib/entity_schema/fields/property.rb'
+    - 'lib/entity_schema/instance_methods.rb'

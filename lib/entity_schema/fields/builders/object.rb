@@ -5,11 +5,13 @@ require_relative '../object'
 
 module EntitySchema
   module Fields
-    # Abstract field
     module Builders
+      # TODO: doc
+
       class Object < Abstract
         private
 
+        # rubocop:disable Naming/UncommunicativeMethodParamName
         def extract_options(h)
           super.merge!(
             mapper:           check_ducktype!(:mapper, h, [:call]),
@@ -19,6 +21,7 @@ module EntitySchema
             serializer:       check_ducktype!(:serializer, h, [:call])
           )
         end
+        # rubocop:enable Naming/UncommunicativeMethodParamName
 
         def create_field_params(o, name)
           super.merge!(

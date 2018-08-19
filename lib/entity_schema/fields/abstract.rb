@@ -2,17 +2,18 @@
 
 module EntitySchema
   module Fields
+    # TODO: doc
     class Abstract
       attr_reader :src_key, :name, :predicate_name, :setter_name, :ivar_name
 
       # TODO: simplify #initialize signature in all ancestors
       # def initialize(name, schema, **params)
-      def initialize(name, schema, src_key:, private_getter:, private_setter:)
+      def initialize(name, schema, options)
         @name   = name.to_sym
         @schema = schema
-        @src_key        = src_key
-        @private_getter = private_getter
-        @private_setter = private_setter
+        @src_key        = options.delete(:src_key)
+        @private_getter = options.delete(:private_getter)
+        @private_setter = options.delete(:private_setter)
 
         @predicate_name = :"#{name}?"
         @setter_name    = :"#{name}="
@@ -72,6 +73,10 @@ module EntitySchema
 
       def raise_public_get
         raise NameError, "Private Getter called for field `#{name}` in `#{schema.owner}`"
+      end
+
+      def guard_unknown_options!(opts)
+        raise "Unknown options given: #{opts.inspect}" if opts.any?
       end
 
       def read(obj)

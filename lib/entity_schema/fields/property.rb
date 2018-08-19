@@ -6,9 +6,10 @@ module EntitySchema
   module Fields
     # TODO: doc
     class Property < Abstract
-      def initialize(name, schema, src_key:, private_getter:, private_setter:, predicate:)
-        @predicate = predicate
-        super(name, schema, src_key: src_key, private_getter: private_getter, private_setter: private_setter)
+      def initialize(name, schema, options)
+        @predicate = options.delete(:predicate)
+        super(name, schema, options)
+        guard_unknown_options!(options)
       end
 
       def predicate?

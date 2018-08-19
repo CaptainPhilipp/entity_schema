@@ -5,11 +5,12 @@ require_relative '../property'
 
 module EntitySchema
   module Fields
-    # Abstract field
     module Builders
+      # TODO: doc
       class Property < Abstract
         private
 
+        # rubocop:disable Naming/UncommunicativeMethodParamName
         def extract_options(h)
           super.merge!(
             predicate: check!(:predicate, h, [true, false, nil])
@@ -21,6 +22,7 @@ module EntitySchema
             predicate: to_bool(o[:predicate])
           )
         end
+        # rubocop:enable Naming/UncommunicativeMethodParamName
 
         def field_klass
           Fields::Property

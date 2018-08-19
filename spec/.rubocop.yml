@@ -1,0 +1,13 @@
+inherit_from: ../.rubocop.yml
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 200
+
+Style/Documentation:
+  Enabled: false

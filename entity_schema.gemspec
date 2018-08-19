@@ -12,7 +12,8 @@ Gem::Specification.new do |spec|
   spec.email         = ['ph-s@mail.ru']
 
   spec.summary       = 'DSL for describe Entities'
-  spec.description   = 'DSL for describe Entities that can have value objects, associations and properties. Focused on performance and simplicity'
+  spec.description   = 'DSL for describe Entities that can have value objects, ' \
+                       'associations and properties. Focused on performance and simplicity'
   spec.homepage      = 'http://nohomepage' # TODO
   spec.license       = 'MIT'
 

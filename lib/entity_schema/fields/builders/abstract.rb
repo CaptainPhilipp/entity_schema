@@ -5,8 +5,8 @@ require_relative '../property'
 
 module EntitySchema
   module Fields
-    # Abstract field
     module Builders
+      # TODO: doc
       class Abstract
         include Singleton
 
@@ -23,12 +23,12 @@ module EntitySchema
 
         private
 
-        def extract_options(h)
+        def extract_options(o)
           {
-            key:              check!(:key, h, [Symbol, nil]),
-            getter:           check!(:getter, h, [:private, nil]),
-            setter:           check!(:setter, h, [:private, nil]),
-            private:          check!(:private, h, [true, false, :getter, :setter, nil])
+            key:     check!(:key, o, [Symbol, nil]),
+            getter:  check!(:getter, o, [:private, nil]),
+            setter:  check!(:setter, o, [:private, nil]),
+            private: check!(:private, o, [true, false, :getter, :setter, nil])
           }
         end
 
@@ -38,9 +38,9 @@ module EntitySchema
 
         def create_field_params(o, name)
           {
-            src_key:          first_of(o[:key], name),
-            private_getter:   first_of(true_(o[:getter] == :private), true_(o[:private] == :getter), true_(o[:private]), false),
-            private_setter:   first_of(true_(o[:setter] == :private), true_(o[:private] == :setter), true_(o[:private]), false)
+            src_key:        first_of(o[:key], name),
+            private_getter: first_of(true_(o[:getter] == :private), true_(o[:private] == :getter), true_(o[:private]), false),
+            private_setter: first_of(true_(o[:setter] == :private), true_(o[:private] == :setter), true_(o[:private]), false)
           }
         end
 
@@ -50,6 +50,7 @@ module EntitySchema
 
         # Helpers
 
+        # rubocop:disable Naming/UncommunicativeMethodParamName
         def check!(key, h, allowed)
           value = h.delete(key)
           return value if allowed.any? do |v|
@@ -57,12 +58,15 @@ module EntitySchema
           end
           raise ArgumentError, "option `#{key}:` must be in #{allowed}, but '#{value.inspect}'"
         end
+        # rubocop:enable Naming/UncommunicativeMethodParamName
 
+        # rubocop:disable Naming/UncommunicativeMethodParamName
         def check_ducktype!(key, h, methods)
           value = h.delete(key)
           return value if value.nil? || methods.all? { |m| value.respond_to?(m) }
           raise ArgumentError, "option `#{key}:` (#{value.inspect}) must respond to #{methods}"
         end
+        # rubocop:enable Naming/UncommunicativeMethodParamName
 
         def first_of(*alternatives)
           alternatives.compact.first

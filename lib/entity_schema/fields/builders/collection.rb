@@ -6,8 +6,8 @@ require_relative '../collection'
 
 module EntitySchema
   module Fields
-    # Abstract field
     module Builders
+      # TODO: doc
       class Collection < Builders::Object
         private
 

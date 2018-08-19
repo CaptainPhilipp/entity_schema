@@ -7,8 +7,8 @@ require_relative '../observer_belongs_to'
 
 module EntitySchema
   module Fields
-    # Abstract field
     module Builders
+      # TODO: doc
       class BelongsTo < Abstract
         def call(name, schema, options)
           options = options.dup
@@ -24,12 +24,14 @@ module EntitySchema
 
         private
 
+        # rubocop:disable Naming/UncommunicativeMethodParamName
         def extract_options(h)
           delete_keys(h, all_keys).merge!(
             pk: check!(:pk, h, [Symbol, nil]),
             fk: check!(:fk, h, [Symbol, nil])
           )
         end
+        # rubocop:enable Naming/UncommunicativeMethodParamName
 
         def create_fk(object_name, schema, opts)
           name = fk_name(opts[:fk], object_name)

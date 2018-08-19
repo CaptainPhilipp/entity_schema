@@ -5,8 +5,8 @@ require_relative '../fk_belongs_to'
 
 module EntitySchema
   module Fields
-    # Abstract field
     module Builders
+      # TODO: doc
       class FkBelongsTo < Abstract
         def create_field_params(o, name)
           super.merge!(predicate: false)

@@ -5,8 +5,8 @@ require_relative '../object_belongs_to'
 
 module EntitySchema
   module Fields
-    # Abstract field
     module Builders
+      # TODO: doc
       class ObjectBelongsTo < Builders::Object
         def field_klass
           Fields::ObjectBelongsTo
