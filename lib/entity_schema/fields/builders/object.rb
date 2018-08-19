@@ -8,8 +8,6 @@ module EntitySchema
     # Abstract field
     module Builders
       class Object < Abstract
-        include Singleton
-
         def call(name, schema, options)
           h = options.dup
           key_              = check! :key, h, [Symbol, nil]
@@ -23,7 +21,7 @@ module EntitySchema
           serializer_       = check_ducktype! :serializer, h, [:call]
           guard_unknown_options!(h, name)
 
-          Fields::Object.new(
+          field_klass.new(
             name,
             schema,
             src_key:          first_of(key_, name),
@@ -34,6 +32,12 @@ module EntitySchema
             serialize_method: serialize_method_ || :to_h,
           )
         end
+      end
+
+      private
+
+      def field_klass
+        Fields::Object
       end
     end
   end

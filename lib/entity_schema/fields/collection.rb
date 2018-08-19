@@ -4,6 +4,11 @@ module EntitySchema
   module Fields
     # TODO: doc
     class Collection < Object
+      def set(obj, collection)
+        raise ArgumentError, 'collection field must be Array' unless collection.is_a?(Array) || collection.nil?
+        super
+      end
+
       def get(obj)
         values = read(obj)
         values.first.is_a?(Hash) ? write(obj, map(values)) : values
