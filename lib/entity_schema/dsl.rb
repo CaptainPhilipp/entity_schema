@@ -3,6 +3,7 @@
 require_relative 'fields/builders/property'
 require_relative 'fields/builders/object'
 require_relative 'fields/builders/collection'
+require_relative 'fields/builders/belongs_to'
 require_relative 'dsl_helper'
 
 
@@ -32,6 +33,10 @@ module EntitySchema
 
     alias has_many collection
 
-    def belongs_to(_name, **_opts) end
+    def belongs_to(name, **opts)
+      fk, object = Fields::Builders::BelongsTo.(name, schema, opts)
+      setup_field object
+      setup_field fk
+    end
   end
 end

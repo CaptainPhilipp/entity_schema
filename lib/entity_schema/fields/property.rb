@@ -7,7 +7,7 @@ module EntitySchema
     # TODO: doc
     class Property < Abstract
       def initialize(name, schema, src_key:, private_getter:, private_setter:, predicate:)
-        @predicate = :predicate
+        @predicate = predicate
         super(name, schema, src_key: src_key, private_getter: private_getter, private_setter: private_setter)
       end
 

@@ -2,7 +2,7 @@
 
 require 'ostruct'
 
-RSpec.describe 'EntitySchema.collection' do
+RSpec.describe 'EntitySchema collection' do
   CustomStruct = Struct.new(:a, :b, keyword_init: true) do
     def self.custom_new(input)
       new(input).tap do |n|

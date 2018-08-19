@@ -18,6 +18,7 @@ module EntitySchema
       end
 
       def serialize(obj, output)
+        return unless given?(obj)
         value = read(obj)
         return output[src_key] = value if value.is_a?(Hash)
         output[src_key] = value.public_send(serialize_method)

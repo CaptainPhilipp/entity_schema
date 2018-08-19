@@ -6,9 +6,9 @@ module EntitySchema
     class FkBelongsTo < Property
       attr_accessor :observer_belongs_to
 
-      def private_set(attributes, objects, value, notify: true)
-        super(attributes, objects, value).tap do |fk|
-          observer_belongs_to.fk_changed(fk, attributes) if notify
+      def set(obj, value, notify_observer: true)
+        super(obj, value).tap do |fk|
+          observer_belongs_to.fk_changed(fk, obj) if notify_observer
         end
       end
     end

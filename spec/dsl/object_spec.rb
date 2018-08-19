@@ -2,8 +2,8 @@
 
 require 'ostruct'
 
-RSpec.describe 'EntitySchema.object' do
-  CustomStruct = Struct.new(:a, :b, keyword_init: true) do
+RSpec.describe 'EntitySchema object' do
+  ValueObject = Struct.new(:a, :b, keyword_init: true) do
     def self.custom_new(input)
       new(input).tap do |n|
         n.instance_variable_set(:@custom_new_called, true)
@@ -30,8 +30,8 @@ RSpec.describe 'EntitySchema.object' do
       end
 
       object :normal,          map_to: OpenStruct
-      object :map_method,      map_to: CustomStruct, map_method: :custom_new
-      object :serialize,       map_to: CustomStruct, serialize: :serialize
+      object :map_method,      map_to: ValueObject, map_method: :custom_new
+      object :serialize,       map_to: ValueObject, serialize: :serialize
       object :key_object_key,  map_to: OpenStruct, key: :object_key
       object :private_true,    map_to: OpenStruct, private: true
       has_one :has_one,        map_to: OpenStruct
@@ -103,7 +103,7 @@ RSpec.describe 'EntitySchema.object' do
   end
 
   def custom(*opts)
-    CustomStruct.new(*opts)
+    ValueObject.new(*opts)
   end
 
   def vobject(*opts)
