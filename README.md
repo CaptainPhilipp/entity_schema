@@ -67,16 +67,6 @@ product.to_h
 # => }
 ```
 
-## Performance
-
-EntitySchema focused on minimal, lazy interaction with raw Hash:
-it means, that if you execute something like this:
-```ruby
-hash = { foo: 'FOO', bar: 'BAR' }
-FooBarEntity.new(hash).to_h
-```
-It will only `#slice` and `#dup` hash, and returns it innocent.
-
 ## Validations, and coercions
 
 No. Entity assumes that given data already validated and coerced.
