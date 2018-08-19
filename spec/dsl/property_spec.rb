@@ -36,7 +36,7 @@ RSpec.describe 'EntitySchema property' do
 
   describe 'without options' do
     it { expect(entity.property).to                  eq 'property' }
-    it { expect { entity.property   = 'changed' }.to change { entity[:property] }.from('property').to('changed') }
+    it { expect { entity.property = 'changed' }.to   change { entity[:property] }.from('property').to('changed') }
     it { expect(entity[:property]).to                eq 'property' }
     it { expect { entity[:property] = 'changed' }.to change { entity.property }.from('property').to('changed') }
     it { expect(entity.to_h[:property]).to           eq 'property' }
@@ -44,7 +44,7 @@ RSpec.describe 'EntitySchema property' do
 
   describe 'with `:key` option, access by name' do
     it { expect(entity.property_name).to                  eq 'property_key' }
-    it { expect { entity.property_name   = 'changed' }.to change { entity[:property_name] }.from('property_key').to('changed') }
+    it { expect { entity.property_name = 'changed' }.to   change { entity[:property_name] }.from('property_key').to('changed') }
     it { expect(entity[:property_name]).to                eq 'property_key' }
     it { expect { entity[:property_name] = 'changed' }.to change { entity.property_name }.from('property_key').to('changed') }
     it { expect(entity.to_h.key?(:property_name)).to      be false }
@@ -60,7 +60,7 @@ RSpec.describe 'EntitySchema property' do
 
   describe 'with `setter: :private` option' do
     it { expect(entity.setter_private).to                       eq 'setter_private' }
-    it { expect { entity.setter_private   = 'changed' }.to      raise_error(NoMethodError) }
+    it { expect { entity.setter_private = 'changed' }.to        raise_error(NoMethodError) }
     it { expect(entity[:setter_private]).to                     eq 'setter_private' }
     it { expect { entity[:setter_private] = 'changed' }.to      raise_error(NameError, 'Private Setter called for field `setter_private` in `Entity`') }
     it { expect { entity.send(:setter_private=, 'changed') }.to change { entity.to_h[:setter_private] }.from('setter_private').to('changed') }
@@ -68,7 +68,7 @@ RSpec.describe 'EntitySchema property' do
 
   describe 'with `private: :getter` option' do
     it { expect { entity.private_getter }.to               raise_error(NoMethodError) }
-    it { expect { entity.private_getter   = 'changed' }.to change { entity.to_h[:private_getter] }.from('private_getter').to('changed') }
+    it { expect { entity.private_getter = 'changed' }.to   change { entity.to_h[:private_getter] }.from('private_getter').to('changed') }
     it { expect { entity[:private_getter] }.to             raise_error(NameError, 'Private Getter called for field `private_getter` in `Entity`') }
     it { expect { entity[:private_getter] = 'changed' }.to change { entity.to_h[:private_getter] }.from('private_getter').to('changed') }
     it { expect(entity.send(:private_getter)).to           eq 'private_getter' }
@@ -87,7 +87,7 @@ RSpec.describe 'EntitySchema property' do
   describe 'with .property? method, without options' do
     it { expect(entity.predicate).to              be true }
     it { expect(entity.predicate?).to             be true }
-    it { expect { entity.predicate   = false }.to change { entity[:predicate] }.from(true).to(false) }
+    it { expect { entity.predicate = false }.to   change { entity[:predicate] }.from(true).to(false) }
     it { expect(entity[:predicate]).to            be true }
     it { expect { entity[:predicate] = false }.to change { entity.predicate? }.from(true).to(false) }
     it { expect(entity.to_h[:predicate]).to       be true }
@@ -95,7 +95,7 @@ RSpec.describe 'EntitySchema property' do
 
   describe 'with .property? method, with `:key` option, access by name' do
     it { expect(entity.predicate_name?).to            be false }
-    it { expect { entity.predicate_name   = true }.to change { entity[:predicate_name] }.from(false).to(true) }
+    it { expect { entity.predicate_name = true }.to   change { entity[:predicate_name] }.from(false).to(true) }
     it { expect(entity[:predicate_name]).to           be false }
     it { expect { entity[:predicate_name] = true }.to change { entity.predicate_name }.from(false).to(true) }
     it { expect(entity.to_h.key?(:predicate_name)).to be false }

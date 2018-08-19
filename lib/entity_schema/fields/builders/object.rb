@@ -24,7 +24,7 @@ module EntitySchema
           super.merge!(
             map_to:           o[:map_to],
             map_method:       o[:map_method] || :new,
-            serialize_method: o[:serialize_method] || :to_h,
+            serialize_method: o[:serialize_method] || :to_h
           )
         end
 

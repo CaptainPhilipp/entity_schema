@@ -14,9 +14,9 @@ RSpec.describe 'EntitySchema object' do
       @custom_new_called || false
     end
 
-    alias old_to_h to_h
+    alias_method :old_to_h, :to_h
 
-    def serialize
+    def transformed_serialize
       old_to_h.transform_keys(&:to_s)
     end
   end
@@ -31,7 +31,7 @@ RSpec.describe 'EntitySchema object' do
 
       object :normal,          map_to: OpenStruct
       object :map_method,      map_to: ValueObject, map_method: :custom_new
-      object :serialize,       map_to: ValueObject, serialize: :serialize
+      object :serialize,       map_to: ValueObject, serialize: :transformed_serialize
       object :key_object_key,  map_to: OpenStruct, key: :object_key
       object :private_true,    map_to: OpenStruct, private: true
       has_one :has_one,        map_to: OpenStruct
@@ -55,7 +55,7 @@ RSpec.describe 'EntitySchema object' do
 
   describe 'without options' do
     it { expect(entity.normal).to                         eq struct(a: 'a') }
-    it { expect { entity.normal   = { a: 'changed' } }.to change { entity[:normal] }.from(struct(a: 'a')).to(struct(a: 'changed')) }
+    it { expect { entity.normal = { a: 'changed' } }.to   change { entity[:normal] }.from(struct(a: 'a')).to(struct(a: 'changed')) }
     it { expect(entity[:normal]).to                       eq struct(a: 'a') }
     it { expect { entity[:normal] = { a: 'changed' } }.to change { entity.normal }.from(struct(a: 'a')).to(struct(a: 'changed')) }
     it { expect(entity.to_h[:normal]).to                  eq(a: 'a') }
@@ -74,7 +74,7 @@ RSpec.describe 'EntitySchema object' do
 
   describe 'with `key:` option' do
     it { expect(entity.key_object_key).to                         eq struct(a: 'e') }
-    it { expect { entity.key_object_key   = { a: 'changed' } }.to change { entity[:key_object_key] }.from(struct(a: 'e')).to(struct(a: 'changed')) }
+    it { expect { entity.key_object_key = { a: 'changed' } }.to   change { entity[:key_object_key] }.from(struct(a: 'e')).to(struct(a: 'changed')) }
     it { expect(entity[:key_object_key]).to                       eq struct(a: 'e') }
     it { expect { entity[:key_object_key] = { a: 'changed' } }.to change { entity.key_object_key }.from(struct(a: 'e')).to(struct(a: 'changed')) }
     it { expect(entity.to_h[:object_key]).to                      eq(a: 'e') }
@@ -82,20 +82,20 @@ RSpec.describe 'EntitySchema object' do
 
   describe 'has_one, without options' do
     it { expect(entity.has_one).to                         eq struct(a: 'f') }
-    it { expect { entity.has_one   = { a: 'changed' } }.to change { entity[:has_one] }.from(struct(a: 'f')).to(struct(a: 'changed')) }
+    it { expect { entity.has_one = { a: 'changed' } }.to   change { entity[:has_one] }.from(struct(a: 'f')).to(struct(a: 'changed')) }
     it { expect(entity[:has_one]).to                       eq struct(a: 'f') }
     it { expect { entity[:has_one] = { a: 'changed' } }.to change { entity.has_one }.from(struct(a: 'f')).to(struct(a: 'changed')) }
     it { expect(entity.to_h[:has_one]).to                  eq(a: 'f') }
   end
 
   describe 'with `private: true` option' do
-    it { expect { entity.private_true }.to                    raise_error(NoMethodError) }
-    it { expect { entity.private_true = 'changed' }.to        raise_error(NoMethodError) }
-    it { expect { entity[:private_true] }.to                  raise_error(NameError, 'Private Getter called for field `private_true` in `Entity`') }
-    it { expect { entity[:private_true] = 'changed' }.to      raise_error(NameError, 'Private Setter called for field `private_true` in `Entity`') }
-    it { expect(entity.send(:private_true)).to                eq struct(a: 'g') }
+    it { expect { entity.private_true }.to                          raise_error(NoMethodError) }
+    it { expect { entity.private_true = 'changed' }.to              raise_error(NoMethodError) }
+    it { expect { entity[:private_true] }.to                        raise_error(NameError, 'Private Getter called for field `private_true` in `Entity`') }
+    it { expect { entity[:private_true] = 'changed' }.to            raise_error(NameError, 'Private Setter called for field `private_true` in `Entity`') }
+    it { expect(entity.send(:private_true)).to                      eq struct(a: 'g') }
     it { expect { entity.send(:private_true=, struct(a: 'gg')) }.to change { entity.to_h[:private_true] }.from(a: 'g').to(a: 'gg') }
-    it { expect(entity.to_h[:private_true]).to                eq(a: 'g') }
+    it { expect(entity.to_h[:private_true]).to                      eq(a: 'g') }
   end
 
   def struct(*opts)

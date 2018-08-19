@@ -14,7 +14,7 @@ RSpec.describe 'EntitySchema belongs_to' do
       @custom_new_called || false
     end
 
-    alias old_to_h to_h
+    alias_method :old_to_h, :to_h
 
     def serialize
       old_to_h.transform_keys(&:to_s)
@@ -118,7 +118,7 @@ RSpec.describe 'EntitySchema belongs_to' do
 
   describe 'with `key:` option' do
     it { expect(entity.key_object_key).to                          eq struct(id: 'g') }
-    it { expect { entity.key_object_key   = { id: 'changed' } }.to change { entity[:key_object_key] }.from(struct(id: 'g')).to(struct(id: 'changed')) }
+    it { expect { entity.key_object_key = { id: 'changed' } }.to change { entity[:key_object_key] }.from(struct(id: 'g')).to(struct(id: 'changed')) }
     it { expect(entity[:key_object_key]).to                        eq struct(id: 'g') }
     it { expect { entity[:key_object_key] = { id: 'changed' } }.to change { entity.key_object_key }.from(struct(id: 'g')).to(struct(id: 'changed')) }
     it { expect(entity.to_h[:object_key]).to                       eq(id: 'g') }
