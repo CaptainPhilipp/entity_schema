@@ -6,7 +6,6 @@ require_relative 'fields/builders/collection'
 require_relative 'fields/builders/belongs_to'
 require_relative 'dsl_helper'
 
-
 module EntitySchema
   # class-level methods for define schema
   module Dsl
@@ -17,8 +16,7 @@ module EntitySchema
     end
 
     def property?(name, **opts)
-      opts.merge! predicate: true
-      property(name, opts)
+      property(name, opts.merge!(predicate: true))
     end
 
     def object(name, **opts)
