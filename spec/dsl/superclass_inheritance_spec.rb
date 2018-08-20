@@ -15,6 +15,10 @@ RSpec.describe 'EntitySchema inheritance from superclass' do
 
   let(:bad_parent_klass) do
     Class.new do
+      def self.to_s
+        'BadParent'
+      end
+
       def self.entity_schema
         OpenStruct.new(dosent: :matter)
       end
@@ -72,9 +76,9 @@ RSpec.describe 'EntitySchema inheritance from superclass' do
 
   # rubocop:disable Layout/MultilineBlockLayout, Layout/BlockEndNewline
   context 'when inherited from parent with wrong `.schema`' do
-    it { expect { bad_children_klass }.to raise_error 'method `.entity_schema` is required by gem "entity_schema" ' \
-                                                      'and must return instance of `EntitySchema::Schema`, ' \
-                                                      'but returns a `OpenStruct`' }
+    it { expect { bad_children_klass }.to raise_error 'class-level method `BadParent.entity_schema` is required by ' \
+                                                      'gem "entity_schema" and must return instance of ' \
+                                                      '`EntitySchema::Schema`, but returns a `OpenStruct`' }
   end
   # rubocop:enable Layout/MultilineBlockLayout, Layout/BlockEndNewline
 
