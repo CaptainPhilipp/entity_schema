@@ -1,4 +1,7 @@
-# EntitySchema [![Gem Version](https://badge.fury.io/rb/entity_schema.svg)](https://badge.fury.io/rb/entity_schema)
+# EntitySchema
+[![Gem Version](https://badge.fury.io/rb/entity_schema.svg)](https://badge.fury.io/rb/entity_schema)
+[![Build Status](https://travis-ci.org/CaptainPhilipp/entity_schema.svg?branch=master)](https://travis-ci.org/CaptainPhilipp/entity_schema)
+
 Class-level DSL for mapping Hash with object-like structure to Object (as Entity), and then return it into Hash.
 
 ```ruby
