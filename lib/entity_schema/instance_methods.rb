@@ -7,7 +7,6 @@ module EntitySchema
       update_attributes(params)
     end
 
-    # TODO: spec
     def update_attributes(params)
       self.class.entity_schema.set_from_params(self, params)
     end

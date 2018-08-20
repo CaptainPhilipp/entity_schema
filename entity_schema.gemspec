@@ -14,13 +14,13 @@ Gem::Specification.new do |spec|
   spec.summary       = 'DSL for describe Entities'
   spec.description   = 'DSL for describe Entities that can have value objects, ' \
                        'associations and properties. Focused on performance and simplicity'
-  spec.homepage      = 'http://nohomepage' # TODO
+  spec.homepage      = 'https://github.com/CaptainPhilipp/entity_schema'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
+    spec.metadata['allowed_push_host'] = 'https://rubygems.org'
   else
     raise 'RubyGems 2.0 or newer is required to protect against ' \
       'public gem pushes.'
