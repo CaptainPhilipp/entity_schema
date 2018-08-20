@@ -9,35 +9,35 @@ module EntitySchema
 
     # TODO: spec
     def update_attributes(params)
-      self.class.schema.set_from_params(self, params)
+      self.class.entity_schema.set_from_params(self, params)
     end
 
     def set(name, value)
-      self.class.schema.public_set(self, name, value)
+      self.class.entity_schema.public_set(self, name, value)
     end
 
     alias []= set
 
     def get(name)
-      self.class.schema.public_get(self, name)
+      self.class.entity_schema.public_get(self, name)
     end
 
     alias [] get
 
     def field?(name)
-      self.class.schema.field?(name)
+      self.class.entity_schema.field?(name)
     end
 
     def given?(name)
-      self.class.schema.given?(self, name)
+      self.class.entity_schema.given?(self, name)
     end
 
     def key?(name)
-      self.class.schema.weak_given?(self, name)
+      self.class.entity_schema.weak_given?(self, name)
     end
 
     def to_h
-      self.class.schema.serialize(self)
+      self.class.entity_schema.serialize(self)
     end
   end
 end

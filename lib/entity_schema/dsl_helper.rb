@@ -9,7 +9,7 @@ module EntitySchema
       remove_method(field.predicate_name) if method_defined?(field.predicate_name)
       remove_method(field.setter_name)    if method_defined?(field.setter_name)
 
-      schema.add_field field
+      entity_schema.add_field field
 
       define_method(field.name) { field.get(self) }
       private(field.name) if field.private_getter?

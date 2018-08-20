@@ -5,29 +5,22 @@ module EntitySchema
   class Schema
     attr_reader :owner
 
-    def initialize(owner)
+    def initialize(owner:)
       @owner = owner
       @fields = {}
       @fields_by_key = {}
     end
 
-    def extends(src)
-      @fields = extract_schema(src).fields.merge(fields)
+    def extends(other)
+      raise 'Cant extend not empty Schema' if fields.any?
+      @fields.merge!        other.fields
+      @fields_by_key.merge! other.fields_by_key
       self
     end
 
     def add_field(field)
       fields[field.name]           = field
       fields_by_key[field.src_key] = field
-    end
-
-    # TODO: use it
-    def deep_freeze
-      fields.each do |name, field|
-        name.freeze
-        field.freeze
-      end.freeze
-      freeze
     end
 
     def set_from_params(obj, params)
@@ -61,21 +54,24 @@ module EntitySchema
       fields[name]&.given?(obj)
     end
 
-    private
+    # TODO: use it
+    def deep_freeze
+      fields.each do |name, field|
+        name.freeze
+        field.freeze
+      end.freeze
+      freeze
+    end
+
+    protected
 
     attr_reader :fields, :fields_by_key
+
+    private
 
     def guard_unknown_field!(name)
       return if field?(name)
       raise NameError, "Unknown field '#{name}' for `#{owner}`"
-    end
-
-    def extract_schema(input)
-      case input
-      when self.class                 then input
-      when input.respond_to?(:schema) then input.schema
-      else raise ArgumentError
-      end
     end
   end
 end
