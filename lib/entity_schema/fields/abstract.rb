@@ -41,9 +41,11 @@ module EntitySchema
         write(obj, value)
       end
 
+      # :nocov:
       def get(_obj)
         raise NotImplementedError
       end
+      # :nocov:
 
       def predicate?
         false

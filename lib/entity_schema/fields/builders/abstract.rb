@@ -46,9 +46,11 @@ module EntitySchema
         end
         # rubocop:enable Metrics/AbcSize:
 
+        # :nocov:
         def field_klass
           raise NotImplementedError
         end
+        # :nocov:
 
         # Helpers
 
