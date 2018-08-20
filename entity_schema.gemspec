@@ -12,8 +12,8 @@ Gem::Specification.new do |spec|
   spec.email         = ['ph-s@mail.ru']
 
   spec.summary       = 'DSL for describe Entities'
-  spec.description   = 'DSL for describe Entities that can have value objects, ' \
-                       'associations and properties. Focused on performance and simplicity'
+  spec.description   = 'Simple DSL for describe schema of mapping Hash to entity Object, ' \
+                       'and then vice-versa'
   spec.homepage      = 'https://github.com/CaptainPhilipp/entity_schema'
   spec.license       = 'MIT'
 
@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
     spec.metadata['allowed_push_host'] = 'https://rubygems.org'
   else
     raise 'RubyGems 2.0 or newer is required to protect against ' \
-      'public gem pushes.'
+          'public gem pushes.'
   end
 
   # Specify which files should be added to the gem when it is released.
