@@ -2,6 +2,15 @@
 
 require 'bundler/setup'
 require 'pry'
+require 'simplecov'
+
+if ENV['CODECOV_TOKEN']
+  require 'codecov'
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+end
+
+SimpleCov.start
+
 require 'entity_schema'
 
 RSpec.configure do |config|
