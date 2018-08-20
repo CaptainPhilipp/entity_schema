@@ -36,13 +36,15 @@ module EntitySchema
           field_klass.new(name, owner_name, **create_field_params(opts, name))
         end
 
+        # rubocop:disable Metrics/AbcSize:
         def create_field_params(o, name)
           {
             src_key:        first_of(o[:key], name),
-            private_getter: first_of(true_(o[:getter] == :private), true_(o[:private] == :getter), true_(o[:private]), false),
-            private_setter: first_of(true_(o[:setter] == :private), true_(o[:private] == :setter), true_(o[:private]), false)
+            public_getter: !first_of(true_(o[:getter] == :private), true_(o[:private] == :getter), true_(o[:private]), false),
+            public_setter: !first_of(true_(o[:setter] == :private), true_(o[:private] == :setter), true_(o[:private]), false)
           }
         end
+        # rubocop:enable Metrics/AbcSize:
 
         def field_klass
           raise NotImplementedError

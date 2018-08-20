@@ -11,9 +11,9 @@ module EntitySchema
       def initialize(name, owner_name, options)
         @name = name.to_sym
         @owner_name = owner_name
-        @src_key        = options.delete(:src_key)
-        @private_getter = options.delete(:private_getter)
-        @private_setter = options.delete(:private_setter)
+        @src_key       = options.delete(:src_key)
+        @public_getter = options.delete(:public_getter)
+        @public_setter = options.delete(:public_setter)
 
         @predicate_name = :"#{name}?"
         @setter_name    = :"#{name}="
@@ -22,12 +22,12 @@ module EntitySchema
 
       # set from public caller
       def public_set(obj, value)
-        raise_public_set if private_setter?
+        raise_public_set unless public_setter?
         set(obj, value)
       end
 
       def public_get(obj)
-        raise_public_get if private_getter?
+        raise_public_get unless public_getter?
         get(obj)
       end
 
@@ -55,12 +55,12 @@ module EntitySchema
         output[src_key] = read(obj) if given?(obj)
       end
 
-      def private_getter?
-        @private_getter
+      def public_getter?
+        @public_getter
       end
 
-      def private_setter?
-        @private_setter
+      def public_setter?
+        @public_setter
       end
 
       private
