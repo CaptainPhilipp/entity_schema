@@ -14,11 +14,11 @@ module EntitySchema
           instance.call(*args)
         end
 
-        def call(name, schema, options)
+        def call(name, owner_name, options)
           options = options.dup
           opts = extract_options(options)
           guard_unknown_options!(options, name)
-          create_field(name, schema, opts)
+          create_field(name, owner_name, opts)
         end
 
         private
@@ -32,8 +32,8 @@ module EntitySchema
           }
         end
 
-        def create_field(name, schema, opts)
-          field_klass.new(name, schema, **create_field_params(opts, name))
+        def create_field(name, owner_name, opts)
+          field_klass.new(name, owner_name, **create_field_params(opts, name))
         end
 
         def create_field_params(o, name)

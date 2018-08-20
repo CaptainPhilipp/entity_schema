@@ -3,10 +3,10 @@
 module EntitySchema
   # aggregate of field resolvers
   class Schema
-    attr_reader :owner
+    attr_reader :owner_name
 
-    def initialize(owner:)
-      @owner = owner
+    def initialize(owner_name:)
+      @owner_name = owner_name
       @fields = {}
       @fields_by_key = {}
     end
@@ -71,7 +71,7 @@ module EntitySchema
 
     def guard_unknown_field!(name)
       return if field?(name)
-      raise NameError, "Unknown field '#{name}' for `#{owner}`"
+      raise NameError, "Unknown field '#{name}' for `#{owner_name}`"
     end
   end
 end

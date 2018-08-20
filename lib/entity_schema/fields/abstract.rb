@@ -7,10 +7,10 @@ module EntitySchema
       attr_reader :src_key, :name, :predicate_name, :setter_name, :ivar_name
 
       # TODO: simplify #initialize signature in all ancestors
-      # def initialize(name, schema, **params)
-      def initialize(name, schema, options)
-        @name   = name.to_sym
-        @schema = schema
+      # def initialize(name, owner_name, **params)
+      def initialize(name, owner_name, options)
+        @name = name.to_sym
+        @owner_name = owner_name
         @src_key        = options.delete(:src_key)
         @private_getter = options.delete(:private_getter)
         @private_setter = options.delete(:private_setter)
@@ -65,14 +65,14 @@ module EntitySchema
 
       private
 
-      attr_reader :schema, :serialize_method
+      attr_reader :owner_name, :serialize_method
 
       def raise_public_set
-        raise NameError, "Private Setter called for field `#{name}` in `#{schema.owner}`"
+        raise NameError, "Private Setter called for field `#{name}` of `#{owner_name}`"
       end
 
       def raise_public_get
-        raise NameError, "Private Getter called for field `#{name}` in `#{schema.owner}`"
+        raise NameError, "Private Getter called for field `#{name}` of `#{owner_name}`"
       end
 
       def guard_unknown_options!(opts)

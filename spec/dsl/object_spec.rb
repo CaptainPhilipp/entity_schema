@@ -91,8 +91,8 @@ RSpec.describe 'EntitySchema object' do
   describe 'with `private: true` option' do
     it { expect { entity.private_true }.to                          raise_error(NoMethodError) }
     it { expect { entity.private_true = 'changed' }.to              raise_error(NoMethodError) }
-    it { expect { entity[:private_true] }.to                        raise_error(NameError, 'Private Getter called for field `private_true` in `Entity`') }
-    it { expect { entity[:private_true] = 'changed' }.to            raise_error(NameError, 'Private Setter called for field `private_true` in `Entity`') }
+    it { expect { entity[:private_true] }.to                        raise_error(NameError, 'Private Getter called for field `private_true` of `Entity`') }
+    it { expect { entity[:private_true] = 'changed' }.to            raise_error(NameError, 'Private Setter called for field `private_true` of `Entity`') }
     it { expect(entity.send(:private_true)).to                      eq struct(a: 'g') }
     it { expect { entity.send(:private_true=, struct(a: 'gg')) }.to change { entity.to_h[:private_true] }.from(a: 'g').to(a: 'gg') }
     it { expect(entity.to_h[:private_true]).to                      eq(a: 'g') }
