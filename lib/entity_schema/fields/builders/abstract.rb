@@ -23,8 +23,7 @@ module EntitySchema
         end
 
         def call(name, owner, options)
-          options = substitute_callable_with_methods(options, owner)
-          opts    = extract_options(options)
+          opts = extract_options(options)
           guard_unknown_options!(options, name)
           create_field(name, owner, opts)
         end
@@ -33,26 +32,32 @@ module EntitySchema
 
         def extract_options(o)
           {
-            key:     check!(:key, o, [Symbol, nil]),
-            getter:  check!(:getter, o, [:private, nil]),
-            setter:  check!(:setter, o, [:private, nil]),
+            key:     check!(:key,     o, [Symbol, nil]),
+            getter:  check!(:getter,  o, [:private, nil]),
+            setter:  check!(:setter,  o, [:private, nil]),
             private: check!(:private, o, [true, false, :getter, :setter, nil])
           }
         end
 
         def create_field(name, owner, opts)
-          field_klass.new(name, owner.to_s, **create_field_params(opts, name))
+          field_klass.new(name, owner.to_s, **create_field_params(name, owner, opts))
         end
 
-        # rubocop:disable Metrics/AbcSize:
-        def create_field_params(o, name)
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        def create_field_params(name, _owner, o)
           {
-            src_key:        first_of(o[:key], name),
-            public_getter: !first_of(true_(o[:getter] == :private), true_(o[:private] == :getter), true_(o[:private]), false),
-            public_setter: !first_of(true_(o[:setter] == :private), true_(o[:private] == :setter), true_(o[:private]), false)
+            src_key:        find(o[:key], name),
+            public_getter: !find(truth(o[:getter] == :private),
+                                 truth(o[:private] == :getter),
+                                 truth(o[:private]),
+                                 false),
+            public_setter: !find(truth(o[:setter] == :private),
+                                 truth(o[:private] == :setter),
+                                 truth(o[:private]),
+                                 false)
           }
         end
-        # rubocop:enable Metrics/AbcSize:
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         # :nocov:
         def field_klass
@@ -60,51 +65,39 @@ module EntitySchema
         end
         # :nocov:
 
-        # TODO: test #substitute_callable_with_methods
-        def substitute_callable_with_methods(options, owner)
-          options.dup.tap do |opts|
-            opts[:serializer] = owner.method(opts[:serializer]) if opts[:serializer].is_a?(Symbol)
-            opts[:mapper]     = owner.method(opts[:mapper])     if opts[:mapper].is_a?(Symbol)
-          end
-        end
-
         # Helpers
 
-        # rubocop:disable Naming/UncommunicativeMethodParamName
-        def check!(key, h, allowed)
-          value = h.delete(key)
-          return value if allowed.any? do |v|
-            v.is_a?(Class) ? value.is_a?(v) : value == v
+        def check!(key, options, allowed, allowed_methods = [])
+          subject = options.delete(key)
+
+          return subject if allowed.any? do |v|
+            (v.is_a?(Class) ? subject.is_a?(v) : subject == v)
           end
-          raise ArgumentError, "option `#{key}:` must be in #{allowed}, but '#{value.inspect}'"
-        end
-        # rubocop:enable Naming/UncommunicativeMethodParamName
 
-        # rubocop:disable Naming/UncommunicativeMethodParamName
-        def check_ducktype!(key, h, methods)
-          value = h.delete(key)
-          return value if value.nil? || methods.all? { |m| value.respond_to?(m) }
-          raise ArgumentError, "option `#{key}:` (#{value.inspect}) must respond to #{methods}"
-        end
-        # rubocop:enable Naming/UncommunicativeMethodParamName
+          return subject if allowed_methods.any? { |m| subject.respond_to?(m) }
 
-        def first_of(*alternatives)
+          raise ArgumentError, "option `#{key}:` must be in #{allowed}, but '#{subject.inspect}'"
+        end
+
+        def find(*alternatives)
           alternatives.compact.first
         end
 
-        def true_(value)
-          value == true ? true : nil
+        def callable(subject)
+          subject if subject.respond_to?(:call)
         end
 
-        def not_bool(value)
-          case value
-          when true, false then nil
-          else value
-          end
+        def owner_meth(option, owner)
+          return unless option.is_a?(Symbol)
+          owner.method(option)
         end
 
-        def to_bool(value)
-          value ? true : false
+        def truth(subject)
+          subject == true ? true : nil
+        end
+
+        def to_bool(subject)
+          subject ? true : false
         end
 
         def guard_unknown_options!(opts, name)

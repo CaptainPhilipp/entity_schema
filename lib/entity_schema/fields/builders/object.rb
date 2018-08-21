@@ -10,31 +10,31 @@ module EntitySchema
       class Object < Abstract
         private
 
-        # rubocop:disable Naming/UncommunicativeMethodParamName
-        def extract_options(h)
+        def extract_options(o)
           super.merge!(
-            mapper:     check_ducktype!(:mapper, h, [:call]),
-            map_to:     check!(:map_to, h, [Class, nil]),
-            map_method: check!(:map_method, h, [Symbol, nil]),
-            serializer: check_ducktype!(:serializer, h, [:call]),
-            serialize:  check!(:serialize, h, [Symbol, nil])
+            mapper:     check!(:mapper,     o, [Symbol, nil], [:call]),
+            map_to:     check!(:map_to,     o, [Class, nil]),
+            map_method: check!(:map_method, o, [Symbol, nil]),
+            serializer: check!(:serializer, o, [Symbol, nil], [:call]),
+            serialize:  check!(:serialize,  o, [Symbol, nil])
           )
         end
-        # rubocop:enable Naming/UncommunicativeMethodParamName
 
         # TODO: test default_mapper, :mapper, :serializer
-        def create_field_params(opts, name)
+        def create_field_params(name, owner, o)
           super.merge!(
-            mapper:     first_of(opts[:mapper],     build_mapper(opts), default_mapper),
-            serializer: first_of(opts[:serializer], build_serializer(opts))
+            mapper: find(callable(o[:mapper]),
+                         owner_meth(o[:mapper], owner),
+                         mapper(o[:map_to], o[:map_method]),
+                         default_mapper),
+            serializer: find(o[:serializer],
+                             build_serializer(o))
           )
         end
 
-        def build_mapper(opts)
-          return if opts[:map_to].nil?
-
-          map_to     = opts[:map_to]
-          map_method = opts[:map_method] || :new
+        def mapper(map_to, map_method)
+          return if map_to.nil?
+          map_method ||= :new
           ->(hash) { map_to.public_send(map_method, hash) }
         end
 

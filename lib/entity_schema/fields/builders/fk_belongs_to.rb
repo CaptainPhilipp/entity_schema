@@ -8,7 +8,7 @@ module EntitySchema
     module Builders
       # TODO: doc
       class FkBelongsTo < Abstract
-        def create_field_params(o, name)
+        def create_field_params(name, _owner, o)
           super.merge!(predicate: false)
         end
 

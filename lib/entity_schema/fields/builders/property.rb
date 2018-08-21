@@ -17,7 +17,7 @@ module EntitySchema
           )
         end
 
-        def create_field_params(o, name)
+        def create_field_params(name, _owner, o)
           super.merge!(
             predicate: to_bool(o[:predicate])
           )
