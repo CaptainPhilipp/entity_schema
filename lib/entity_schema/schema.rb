@@ -12,7 +12,7 @@ module EntitySchema
         @fields        = extends.fields
         @fields_by_key = extends.fields_by_key
       else
-        @fields        = {}
+        @fields        = new_strict_hash
         @fields_by_key = {}
       end
     end
@@ -27,12 +27,10 @@ module EntitySchema
     end
 
     def public_set(obj, name, value)
-      guard_unknown_field!(name)
       fields[name].public_set(obj, value)
     end
 
     def public_get(obj, name)
-      guard_unknown_field!(name)
       fields[name].public_get(obj)
     end
 
@@ -45,12 +43,11 @@ module EntitySchema
     end
 
     def given?(obj, name)
-      guard_unknown_field!(name)
       fields[name].given?(obj)
     end
 
     def weak_given?(obj, name)
-      fields[name]&.given?(obj)
+      fields.fetch(name, nil)&.given?(obj)
     end
 
     # TODO: use it
@@ -68,9 +65,8 @@ module EntitySchema
 
     private
 
-    def guard_unknown_field!(name)
-      return if field?(name)
-      raise NameError, "Unknown field '#{name}' for `#{owner_name}`"
+    def new_strict_hash
+      Hash.new { |_, key| raise NameError, "Unknown field '#{key}' for `#{owner_name}`" }
     end
   end
 end
