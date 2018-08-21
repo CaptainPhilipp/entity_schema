@@ -5,17 +5,16 @@ module EntitySchema
   class Schema
     attr_reader :owner_name
 
-    def initialize(owner_name:)
+    def initialize(owner_name:, extends: nil)
       @owner_name = owner_name
-      @fields = {}
-      @fields_by_key = {}
-    end
 
-    def extends(other)
-      raise 'Cant extend not empty Schema' if fields.any?
-      @fields.merge!        other.fields
-      @fields_by_key.merge! other.fields_by_key
-      self
+      if extends
+        @fields        = extends.fields
+        @fields_by_key = extends.fields_by_key
+      else
+        @fields        = {}
+        @fields_by_key = {}
+      end
     end
 
     def add_field(field)

@@ -17,7 +17,7 @@ module EntitySchema
                               "`#{Schema}`, but returns a `#{superschema.class}`"
           end
 
-          Schema.new(owner_name: to_s).extends(superschema)
+          Schema.new(owner_name: to_s, extends: superschema)
         else
           Schema.new(owner_name: to_s)
         end
