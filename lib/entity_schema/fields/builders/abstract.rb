@@ -7,6 +7,14 @@ module EntitySchema
   module Fields
     module Builders
       # TODO: doc
+      # Todo: refactor overweight class:
+      #   Responsibilities:
+      #     - options with strict contract and meaningfull exceptions,
+      #     - options transformation,
+      #     - building object,
+      #       building default mappers/serializers
+      #   refactor to Specification, Builder,
+      #         or to ParamsObject, Specification, Builder
       class Abstract
         include Singleton
 
@@ -14,11 +22,11 @@ module EntitySchema
           instance.call(*args)
         end
 
-        def call(name, owner_name, options)
-          options = options.dup
-          opts = extract_options(options)
+        def call(name, owner, options)
+          options = substitute_callable_with_methods(options, owner)
+          opts    = extract_options(options)
           guard_unknown_options!(options, name)
-          create_field(name, owner_name, opts)
+          create_field(name, owner, opts)
         end
 
         private
@@ -32,8 +40,8 @@ module EntitySchema
           }
         end
 
-        def create_field(name, owner_name, opts)
-          field_klass.new(name, owner_name, **create_field_params(opts, name))
+        def create_field(name, owner, opts)
+          field_klass.new(name, owner.to_s, **create_field_params(opts, name))
         end
 
         # rubocop:disable Metrics/AbcSize:
@@ -51,6 +59,14 @@ module EntitySchema
           raise NotImplementedError
         end
         # :nocov:
+
+        # TODO: test #substitute_callable_with_methods
+        def substitute_callable_with_methods(options, owner)
+          options.dup.tap do |opts|
+            opts[:serializer] = owner.method(opts[:serializer]) if opts[:serializer].is_a?(Symbol)
+            opts[:mapper]     = owner.method(opts[:mapper])     if opts[:mapper].is_a?(Symbol)
+          end
+        end
 
         # Helpers
 

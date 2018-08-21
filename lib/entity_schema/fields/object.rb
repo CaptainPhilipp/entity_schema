@@ -5,9 +5,8 @@ module EntitySchema
     # TODO: doc
     class Object < Abstract
       def initialize(name, schema, options)
-        @map_to           = options.delete(:map_to)
-        @map_method       = options.delete(:map_method)
-        @serialize_method = options.delete(:serialize_method)
+        @mapper     = options.delete(:mapper)
+        @serializer = options.delete(:serializer)
         super(name, schema, options)
         guard_unknown_options!(options)
       end
@@ -21,15 +20,19 @@ module EntitySchema
         return unless given?(obj)
         value = read(obj)
         return output[src_key] = value if value.is_a?(Hash)
-        output[src_key] = value.public_send(serialize_method)
+        output[src_key] = unwrap(value)
       end
 
       private
 
-      attr_reader :map_to, :map_method, :serialize_method
+      attr_reader :mapper, :serializer
 
-      def map(tuple)
-        map_to.public_send(map_method, tuple)
+      def map(hash)
+        mapper.call(hash)
+      end
+
+      def unwrap(object)
+        serializer.call(object)
       end
     end
   end

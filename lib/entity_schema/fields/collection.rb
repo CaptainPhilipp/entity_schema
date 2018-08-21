@@ -21,14 +21,12 @@ module EntitySchema
 
       private
 
-      attr_reader :serialize_method
-
-      def map(tuples)
-        tuples.map { |tuple| map_to.public_send(map_method, tuple) }
+      def map(hashes)
+        hashes.map { |hash| super(hash) }
       end
 
       def unwrap(objects)
-        objects.map { |obj| obj.public_send(serialize_method) }
+        objects.map { |object| super(object) }
       end
     end
   end
