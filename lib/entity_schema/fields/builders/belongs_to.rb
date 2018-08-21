@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'abstract'
+require_relative 'base'
 require_relative 'fk_belongs_to'
 require_relative 'object_belongs_to'
 require_relative '../observer_belongs_to'
@@ -9,7 +9,7 @@ module EntitySchema
   module Fields
     module Builders
       # TODO: doc
-      class BelongsTo < Abstract
+      class BelongsTo < Base
         def call(name, schema, options)
           options = options.dup
           opts = extract_options(options)

@@ -13,10 +13,6 @@ Naming/ConstantName:
   Exclude:
     - 'lib/entity_schema.rb'
 
-Style/Documentation:
-  Exclude:
-    - 'lib/entity_schema.rb'
-
 Metrics/BlockLength:
   Exclude:
     - 'entity_schema.gemspec'
@@ -44,6 +40,7 @@ Style/Documentation:
     - 'lib/entity_schema/dsl_helper.rb'
     - 'lib/entity_schema/fields/abstract.rb'
     - 'lib/entity_schema/fields/builders/abstract.rb'
+    - 'lib/entity_schema/fields/builders/base.rb'
     - 'lib/entity_schema/fields/builders/belongs_to.rb'
     - 'lib/entity_schema/fields/builders/collection.rb'
     - 'lib/entity_schema/fields/builders/fk_belongs_to.rb'

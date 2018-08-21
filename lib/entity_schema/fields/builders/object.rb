@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require_relative 'abstract'
+require_relative 'base'
 require_relative '../object'
 
 module EntitySchema
   module Fields
     module Builders
       # TODO: doc
-      class Object < Abstract
+      class Object < Base
         private
 
         def extract_options(o)

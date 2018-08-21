@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require_relative 'abstract'
+require_relative 'base'
 require_relative '../property'
 
 module EntitySchema
   module Fields
     module Builders
       # TODO: doc
-      class Property < Abstract
+      class Property < Base
         private
 
         # rubocop:disable Naming/UncommunicativeMethodParamName

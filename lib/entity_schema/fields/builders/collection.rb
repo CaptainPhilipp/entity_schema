@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'abstract'
+require_relative 'base'
 require_relative 'object'
 require_relative '../collection'
 
