@@ -10,19 +10,11 @@ module EntitySchema
       class Property < Base
         private
 
-        # rubocop:disable Naming/UncommunicativeMethodParamName
-        def extract_options(h)
-          super.merge!(
-            predicate: check!(:predicate, h, [true, false, nil])
-          )
-        end
-
         def create_field_params(name, _owner, o)
           super.merge!(
-            predicate: to_bool(o[:predicate])
+            predicate: o[:predicate]
           )
         end
-        # rubocop:enable Naming/UncommunicativeMethodParamName
 
         def field_klass
           Fields::Property

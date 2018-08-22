@@ -4,7 +4,7 @@ module EntitySchema
   # TODO: remove this shit
   # TODO: doc
   module DslHelper
-    def setup_field(field)
+    def setup_field(field, specification = nil)
       remove_method(field.name)           if method_defined?(field.name)
       remove_method(field.predicate_name) if method_defined?(field.predicate_name)
       remove_method(field.setter_name)    if method_defined?(field.setter_name)
@@ -12,15 +12,15 @@ module EntitySchema
       entity_schema.add_field field
 
       define_method(field.name) { field.get(self) }
-      private(field.name) unless field.public_getter?
+      private(field.name) unless specification[:public_getter]
 
       if field.predicate?
-        define_method(field.predicate_name) { field.get(self) }
-        private(field.predicate_name) unless field.public_getter?
+        define_method(:"#{field.name}?") { field.get(self) }
+        private(:"#{field.name}?") unless specification[:public_getter]
       end
 
-      define_method(field.setter_name) { |value| field.set(self, value) }
-      private(field.setter_name) unless field.public_setter?
+      define_method(:"#{field.name}=") { |value| field.set(self, value) }
+      private(:"#{field.name}=") unless specification[:public_setter]
     end
   end
 end

@@ -2,6 +2,8 @@
 
 require_relative 'abstract'
 
+require_relative 'abstract'
+
 module EntitySchema
   module Fields
     # TODO: doc

@@ -1,17 +1,50 @@
 # frozen_string_literal: true
 
-require 'singleton'
-
 module EntitySchema
   module Fields
-    module Builders
+    module Specifications
       # TODO: doc
       # TODO: refactor overweight class
       # Builder is a Functional Object for creating Field using given options
       # In Abstract class defined interface and methods for processing any given options
       # ? may be extract options processing to another class
-      module OptionsProcessingMixin
-        def check!(key, options, allowed, allowed_methods = [])
+      class Abstract
+        def self.title
+          to_s.match('::([A-Z][A-z]+)$')[1].downcase
+        end
+
+        def initialize(name, owner, raw_options)
+          @owner = owner
+          options = contract_options!(raw_options)
+          guard_unknown_options!(raw_options, name)
+          @options = transform_options(name, options)
+        end
+
+        def [](key)
+          options[key]
+        end
+
+        def to_h
+          options
+        end
+
+        private
+
+        attr_reader :options
+
+        # :nocov:
+        def contract_options!(_raw_options)
+          Hash.new { |_, key| raise NameError, "Unknown raw option #{key.inspect}" }
+        end
+        # :nocov:
+
+        # :nocov:
+        def transform_options(_name, _options)
+          Hash.new { |_, key| raise NameError, "Unknown option #{key.inspect}" }
+        end
+        # :nocov:
+
+        def contract!(key, options, allowed, allowed_methods = [])
           subject = options.delete(key)
 
           return subject if allowed.any? do |v|
@@ -45,7 +78,11 @@ module EntitySchema
         end
 
         def guard_unknown_options!(opts, name)
-          raise "Unknown options given to `#{name}:` #{opts.inspect}" if opts.any?
+          raise "Unknown options #{opts.inspect} given to `#{title} :#{name}`" if opts.any?
+        end
+
+        def title
+          "#{@owner}.#{self.class.title}"
         end
       end
     end
