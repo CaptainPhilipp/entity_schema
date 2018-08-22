@@ -22,16 +22,16 @@ module EntitySchema
           [fk, object]
         end
 
-        private
-
         # rubocop:disable Naming/UncommunicativeMethodParamName
-        def contract_options!(h)
+        def contract(h)
           delete_keys(h, all_keys).merge!(
             pk: contract!(:pk, h, [Symbol, nil]),
             fk: contract!(:fk, h, [Symbol, nil])
           )
         end
         # rubocop:enable Naming/UncommunicativeMethodParamName
+
+        private
 
         def create_fk(object_name, schema, opts)
           name = fk_name(opts[:fk], object_name)

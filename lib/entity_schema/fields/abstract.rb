@@ -76,7 +76,7 @@ module EntitySchema
       end
 
       def guard_unknown_options!(opts)
-        raise "Unknown options given: #{opts.inspect}" if opts.any?
+        raise "Unknown builder options given: #{opts.inspect}" if opts.any?
       end
 
       def read(obj)

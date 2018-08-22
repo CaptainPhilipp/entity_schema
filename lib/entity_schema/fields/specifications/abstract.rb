@@ -13,11 +13,16 @@ module EntitySchema
           to_s.match('::([A-Z][A-z]+)$')[1].downcase
         end
 
-        def initialize(name, owner, raw_options)
-          @owner            = owner
-          @contract_options = contract_options!(raw_options)
-          guard_unknown_options!(raw_options, name)
-          @options = transform_options(name, @contract_options)
+        def initialize(name, owner, raw_options, skip_unknown: false)
+          @name  = name
+          @owner = owner
+          @skip_unknown = skip_unknown
+          contract!(raw_options)
+          @options = transform_options(raw_options)
+        end
+
+        def self.contract
+          @contract ||= {}
         end
 
         def [](key)
@@ -30,31 +35,25 @@ module EntitySchema
 
         private
 
-        attr_reader :options, :owner
+        attr_reader :options, :owner, :name
 
-        # :nocov:
-        def contract_options!(_raw_options)
-          Hash.new { |_, key| raise NameError, "Unknown raw option #{key.inspect}" }
-        end
-        # :nocov:
+        def contract!(options)
+          options.each do |key, value|
+            raise_unknown_option(key, value) unless self.class.contract.key?(key) || @skip_unknown
 
-        # :nocov:
-        def transform_options(_name, _options)
-          Hash.new { |_, key| raise NameError, "Unknown option #{key.inspect}" }
-        end
-        # :nocov:
-
-        def contract!(key, options, allowed, allowed_methods = [])
-          subject = options.delete(key)
-
-          return subject if allowed.any? do |v|
-            (v.is_a?(Class) ? subject.is_a?(v) : subject == v)
+            rules = self.class.contract[key]
+            next if rules[:eq]&.any?         { |expectation| expectation == value }
+            next if rules[:type]&.any?       { |type| value.is_a?(type) }
+            next if rules[:respond_to]&.any? { |meth| value.respond_to?(meth) }
+            raise_unexpected_option_value(rules, key, value)
           end
-
-          return subject if allowed_methods.any? { |m| subject.respond_to?(m) }
-
-          raise ArgumentError, "option `#{key}:` must be in #{allowed}, but '#{subject.inspect}'"
         end
+
+        # :nocov:
+        def transform_options(_options)
+          Hash.new { |_, k| raise NameError, "Unknown option for transformation #{k.inspect}" }
+        end
+        # :nocov:
 
         def find(*alternatives)
           alternatives.compact.first
@@ -64,7 +63,7 @@ module EntitySchema
           subject if subject.respond_to?(:call)
         end
 
-        def owner_meth(option, owner)
+        def owner_meth(option)
           return unless option.is_a?(Symbol)
           owner.method(option)
         end
@@ -77,10 +76,18 @@ module EntitySchema
           subject ? true : false
         end
 
-        def guard_unknown_options!(opts, name)
-          return if opts.empty?
-          raise "Unknown options #{opts.inspect} given to `#{title} :#{name}`\n" \
-                "  Known options: #{@contract_options.keys}"
+        def raise_unknown_option(key, value)
+          raise "Unknown option `#{key.inspect} => #{value.inspect}` given to `#{title} :#{name}`\n" \
+                "  Known options: #{contract.keys}"
+        end
+
+        def raise_unexpected_option_value(rules, key, value)
+          msg  = "Unexpected option value `#{value.inspect}` of option `#{key.inspect}`."
+          msgs = []
+          msgs << "\n  Expected to be equal to one of: #{rules[:eq]}" if rules[:eq]&.any?
+          msgs << "\n  Expected to be one of: #{rules[:type]}" if rules[:type]&.any?
+          msgs << "\n  Expected to respond to one of method: #{rules[:respond_to]}" if rules[:respond_to]&.any?
+          raise TypeError, (msg + msgs * ' OR')
         end
 
         def title

@@ -7,15 +7,15 @@ module EntitySchema
     module Specifications
       # TODO: doc
       class Property < Base
-        private
-
-        def contract_options!(o)
+        def self.contract
           super.merge!(
-            predicate: contract!(:predicate, o, [true, false, nil])
+            predicate: { eq: [true, false, nil] }
           )
         end
 
-        def transform_options(name, o)
+        private
+
+        def transform_options(o)
           super.merge!(
             predicate: to_bool(o[:predicate])
           )

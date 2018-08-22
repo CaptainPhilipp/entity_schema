@@ -8,22 +8,22 @@ module EntitySchema
     module Specifications
       # TODO: doc
       class Object < Base
-        private
-
-        def contract_options!(o)
+        def self.contract
           super.merge!(
-            mapper:     contract!(:mapper,     o, [Symbol, nil], [:call]),
-            map_to:     contract!(:map_to,     o, [Class, nil]),
-            map_method: contract!(:map_method, o, [Symbol, nil]),
-            serializer: contract!(:serializer, o, [Symbol, nil], [:call]),
-            serialize:  contract!(:serialize,  o, [Symbol, nil])
+            mapper:     { type: [Symbol], eq: [nil], respond_to: [:call] },
+            map_to:     { type: [Class],  eq: [nil] },
+            map_method: { type: [Symbol], eq: [nil] },
+            serializer: { type: [Symbol], eq: [nil], respond_to: [:call] },
+            serialize:  { type: [Symbol], eq: [nil] }
           )
         end
 
-        def transform_options(name, o)
+        private
+
+        def transform_options(o)
           super.merge!(
             mapper:     find(callable(o[:mapper]),
-                             owner_meth(o[:mapper], owner),
+                             owner_meth(o[:mapper]),
                              mapper(o[:map_to], o[:map_method]),
                              default_mapper),
             serializer: find(o[:serializer],
