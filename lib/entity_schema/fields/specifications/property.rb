@@ -7,12 +7,6 @@ module EntitySchema
     module Specifications
       # TODO: doc
       class Property < Base
-        def self.contract
-          super.merge!(
-            predicate: { eq: [true, false, nil] }
-          )
-        end
-
         private
 
         def transform_options(o)

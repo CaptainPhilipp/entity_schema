@@ -3,7 +3,6 @@
 require_relative 'base'
 require_relative 'fk_belongs_to'
 require_relative 'object_belongs_to'
-require_relative '../observer_belongs_to'
 
 module EntitySchema
   module Fields

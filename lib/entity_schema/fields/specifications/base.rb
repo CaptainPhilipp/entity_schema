@@ -10,15 +10,6 @@ module EntitySchema
       # Builder is a Functional Object for creating Field using given options
       # In Abstract class defined interface and methods for processing any given options
       class Base < Abstract
-        def self.contract
-          super.merge!(
-            key:     { eq: [nil], type: [Symbol] },
-            getter:  { eq: [:private, nil] },
-            setter:  { eq: [:private, nil] },
-            private: { eq: [true, false, :getter, :setter, nil] }
-          )
-        end
-
         private
 
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
