@@ -6,7 +6,9 @@ module EntitySchema
   module Fields
     module Builders
       # TODO: doc
-      class Base < Abstract
+      # Builder is a Functional Object for creating Field using given options
+      # in base builder defined concrete common options processing for all fields
+      class Common < Abstract
         private
 
         def extract_options(o)
@@ -16,10 +18,6 @@ module EntitySchema
             setter:  check!(:setter,  o, [:private, nil]),
             private: check!(:private, o, [true, false, :getter, :setter, nil])
           }
-        end
-
-        def create_field(name, owner, opts)
-          field_klass.new(name, owner.to_s, **create_field_params(name, owner, opts))
         end
 
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength

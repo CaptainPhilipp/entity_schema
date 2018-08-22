@@ -7,7 +7,7 @@ module EntitySchema
   module Fields
     module Builders
       # TODO: doc
-      class Object < Base
+      class Object < Common
         private
 
         def extract_options(o)
@@ -23,10 +23,10 @@ module EntitySchema
         # TODO: test default_mapper, :mapper, :serializer
         def create_field_params(name, owner, o)
           super.merge!(
-            mapper: find(callable(o[:mapper]),
-                         owner_meth(o[:mapper], owner),
-                         mapper(o[:map_to], o[:map_method]),
-                         default_mapper),
+            mapper:      find(callable(o[:mapper]),
+                              owner_meth(o[:mapper], owner),
+                              mapper(o[:map_to], o[:map_method]),
+                              default_mapper),
             serializer: find(o[:serializer],
                              build_serializer(o))
           )

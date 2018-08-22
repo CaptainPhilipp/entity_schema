@@ -6,6 +6,10 @@ module EntitySchema
   module Fields
     module Builders
       # TODO: doc
+      # TODO: refactor overweight class
+      # Builder is a Functional Object for creating Field using given options
+      # In Abstract class defined interface and methods for processing any given options
+      # ? may be extract options processing to another class
       class Abstract
         include Singleton
 

@@ -7,8 +7,8 @@ module EntitySchema
   module Fields
     module Builders
       # TODO: doc
-      class FkBelongsTo < Base
-        def create_field_params(name, _owner, o)
+      class FkBelongsTo < Common
+        def create_field_params(_name, _owner, _options)
           super.merge!(predicate: false)
         end
 
