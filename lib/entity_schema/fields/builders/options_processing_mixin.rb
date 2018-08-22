@@ -10,51 +10,7 @@ module EntitySchema
       # Builder is a Functional Object for creating Field using given options
       # In Abstract class defined interface and methods for processing any given options
       # ? may be extract options processing to another class
-      class Abstract
-        include Singleton
-
-        def self.call(*args)
-          instance.call(*args)
-        end
-
-        def call(name, owner, options)
-          opts = extract_options(options)
-          guard_unknown_options!(options, name)
-          create_field(name, owner, opts)
-        end
-
-        private
-
-        # :nocov:
-        def extract_options(_options)
-          raise NotImplementedError
-        end
-        # :nocov:
-
-        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-        def create_field_params(name, _owner, o)
-          {
-            src_key:        find(o[:key], name),
-            public_getter: !find(truth(o[:getter] == :private),
-                                 truth(o[:private] == :getter),
-                                 truth(o[:private]),
-                                 false),
-            public_setter: !find(truth(o[:setter] == :private),
-                                 truth(o[:private] == :setter),
-                                 truth(o[:private]),
-                                 false)
-          }
-        end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-
-        # :nocov:
-        def field_klass
-          raise NotImplementedError
-        end
-        # :nocov:
-
-        # Helpers
-
+      module OptionsProcessingMixin
         def check!(key, options, allowed, allowed_methods = [])
           subject = options.delete(key)
 

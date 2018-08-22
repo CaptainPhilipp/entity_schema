@@ -7,7 +7,7 @@ module EntitySchema
   module Fields
     module Builders
       # TODO: doc
-      class Property < Common
+      class Property < Base
         private
 
         # rubocop:disable Naming/UncommunicativeMethodParamName

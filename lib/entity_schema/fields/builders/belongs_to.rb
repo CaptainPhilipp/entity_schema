@@ -9,7 +9,7 @@ module EntitySchema
   module Fields
     module Builders
       # TODO: doc
-      class BelongsTo < Common
+      class BelongsTo < Base
         def call(name, schema, options)
           options = options.dup
           opts = extract_options(options)

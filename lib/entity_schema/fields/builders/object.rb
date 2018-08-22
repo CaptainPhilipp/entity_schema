@@ -7,7 +7,7 @@ module EntitySchema
   module Fields
     module Builders
       # TODO: doc
-      class Object < Common
+      class Object < Base
         private
 
         def extract_options(o)

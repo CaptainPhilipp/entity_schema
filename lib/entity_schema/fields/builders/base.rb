@@ -1,14 +1,32 @@
 # frozen_string_literal: true
 
-require_relative 'abstract'
+require 'singleton'
+require_relative 'options_processing_mixin'
 
 module EntitySchema
   module Fields
     module Builders
       # TODO: doc
+      # TODO: refactor overweight class
       # Builder is a Functional Object for creating Field using given options
-      # in base builder defined concrete common options processing for all fields
-      class Common < Abstract
+      # In Abstract class defined interface and methods for processing any given options
+      # ? may be extract options processing to another class
+      class Base
+        include Singleton
+        include OptionsProcessingMixin
+
+        def self.call(*args)
+          instance.call(*args)
+        end
+
+        def call(name, owner, options)
+          opts = extract_options(options)
+          guard_unknown_options!(options, name)
+
+          params = create_field_params(name, owner, opts)
+          create_field(name, owner, params)
+        end
+
         private
 
         def extract_options(o)
@@ -35,6 +53,16 @@ module EntitySchema
           }
         end
         # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+        def create_field(name, owner, params)
+          field_klass.new(name, owner.to_s, **params)
+        end
+
+        # :nocov:
+        def field_klass
+          raise NotImplementedError
+        end
+        # :nocov:
       end
     end
   end
