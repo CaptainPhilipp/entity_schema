@@ -17,12 +17,11 @@ module EntitySchema
           @owner            = owner
           @contract_options = contract_options!(raw_options)
           guard_unknown_options!(raw_options, name)
-
           @options = transform_options(name, @contract_options)
         end
 
         def [](key)
-          options[key]
+          options.fetch(key, nil)
         end
 
         def to_h

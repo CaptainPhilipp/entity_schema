@@ -30,21 +30,24 @@ module EntitySchema
     def object(name, **opts)
       specicifation = Fields::Specifications::Object.new(name, to_s, opts)
       field         = Fields::Builders::Object.(name, self, specicifation.to_h)
-      setup_field field, specicifation
+      setup_field(field, specicifation)
     end
 
     alias has_one object
 
     def collection(name, **opts)
-      setup_field Fields::Builders::Collection.(name, self, opts)
+      specicifation = Fields::Specifications::Collection.new(name, to_s, opts)
+      field         = Fields::Builders::Collection.(name, self, specicifation.to_h)
+      setup_field(field, specicifation)
     end
 
     alias has_many collection
 
     def belongs_to(name, **opts)
-      fk, object = Fields::Builders::BelongsTo.(name, self, opts)
-      setup_field object
-      setup_field fk
+      specicifation = Fields::Specifications::BelongsTo.new(name, to_s, opts)
+      fk, object = Fields::Builders::BelongsTo.(name, self, specicifation.to_h)
+      setup_field(object, specicifation)
+      setup_field(fk, specicifation)
     end
   end
 end

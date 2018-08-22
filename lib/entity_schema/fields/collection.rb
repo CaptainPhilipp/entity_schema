@@ -7,8 +7,10 @@ module EntitySchema
     # TODO: doc
     class Collection < Object
       def set(obj, collection)
-        return super if collection.is_a?(Array) || collection.nil?
-        raise ArgumentError, 'collection field must be Array'
+        case collection
+        when Array, nil then super
+        else raise ArgumentError, 'collection field must be Array'
+        end
       end
 
       def get(obj)
