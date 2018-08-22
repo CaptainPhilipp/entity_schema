@@ -9,10 +9,18 @@ module EntitySchema
       # In Abstract class defined interface and methods for processing any given options
       # ? may be extract options processing to another class
       class Abstract
-        def initialize(name, owner, raw_options)
-          @name  = name
-          @owner = owner
-          @options = transform_options(raw_options)
+        def initialize(name, owner_name, raw_options)
+          @options = transform_options(name: name,
+                                       owner_name: owner_name,
+                                       **raw_options)
+        end
+
+        def owner
+          options[:owner]
+        end
+
+        def name
+          options[:name]
         end
 
         def [](key)
@@ -25,16 +33,25 @@ module EntitySchema
 
         private
 
-        attr_reader :options, :owner, :name
+        attr_reader :options
 
-        # :nocov:
+        # Hook for ancestors
         def transform_options(_options)
-          Hash.new { |_, k| raise "Gem works wrong: not transformed option #{k.inspect}" }
+          Hash.new { |_, k| raise "Gem works wrong: missed option `#{k.inspect}` called" }
         end
-        # :nocov:
 
         def find(*alternatives)
           alternatives.compact.first
+        end
+
+        # eql(hash, a: 1, b: [1, 2, :value])
+        def eql(input, pairs)
+          pairs.each do |k, values|
+            Array(values).each do |v|
+              return true if input[k] == v
+            end
+          end
+          nil
         end
 
         def callable(subject)

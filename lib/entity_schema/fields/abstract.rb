@@ -6,9 +6,9 @@ module EntitySchema
     class Abstract
       attr_reader :src_key, :name, :predicate_name, :setter_name, :ivar_name
 
-      def initialize(name, owner_name, options)
-        @name = name.to_sym
-        @owner_name = owner_name
+      def initialize(options)
+        @name          = options.delete(:name)
+        @owner_name    = options.delete(:owner_name)
         @src_key       = options.delete(:src_key)
         @public_getter = options.delete(:public_getter)
         @public_setter = options.delete(:public_setter)

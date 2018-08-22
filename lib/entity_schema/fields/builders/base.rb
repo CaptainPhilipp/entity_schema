@@ -17,8 +17,8 @@ module EntitySchema
           instance.call(*args)
         end
 
-        def call(name, owner, options)
-          field_klass.new(name, owner.to_s, **options)
+        def call(options)
+          field_klass.new(**options)
         end
 
         private

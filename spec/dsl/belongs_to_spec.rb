@@ -3,6 +3,8 @@
 require 'ostruct'
 
 RSpec.describe 'EntitySchema belongs_to' do
+  before { skip }
+
   RelatedObject = Struct.new(:id, :a, keyword_init: true) do
     def self.custom_new(input)
       new(input).tap do |n|

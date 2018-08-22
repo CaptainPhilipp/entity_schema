@@ -8,9 +8,9 @@ module EntitySchema
   module Fields
     # TODO: doc
     class Property < Abstract
-      def initialize(name, schema, options)
+      def initialize(options)
         @predicate = options.delete(:predicate)
-        super(name, schema, options)
+        super(options)
         guard_unknown_options!(options)
       end
 

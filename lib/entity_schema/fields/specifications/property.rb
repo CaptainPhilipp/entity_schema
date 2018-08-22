@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require_relative 'base'
+require_relative 'common'
 
 module EntitySchema
   module Fields
     module Specifications
       # TODO: doc
-      class Property < Base
+      class Property < Common
         private
 
         def transform_options(o)

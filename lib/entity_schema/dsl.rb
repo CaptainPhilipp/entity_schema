@@ -29,14 +29,14 @@ module EntitySchema
     def property(name, **opts)
       Fields::Contracts::Property.(name, to_s, opts)
       specicifation = Fields::Specifications::Property.new(name, to_s, opts)
-      field         = Fields::Builders::Property.(name, self, specicifation.to_h)
+      field         = Fields::Builders::Property.(specicifation.to_h)
       setup_field(field, specicifation)
     end
 
     def object(name, **opts)
       Fields::Contracts::Object.(name, to_s, opts)
       specicifation = Fields::Specifications::Object.new(name, to_s, opts)
-      field         = Fields::Builders::Object.(name, self, specicifation.to_h)
+      field         = Fields::Builders::Object.(specicifation.to_h)
       setup_field(field, specicifation)
     end
 
@@ -45,7 +45,7 @@ module EntitySchema
     def collection(name, **opts)
       Fields::Contracts::Collection.(name, to_s, opts)
       specicifation = Fields::Specifications::Collection.new(name, to_s, opts)
-      field         = Fields::Builders::Collection.(name, self, specicifation.to_h)
+      field         = Fields::Builders::Collection.(specicifation.to_h)
       setup_field(field, specicifation)
     end
 
@@ -54,7 +54,7 @@ module EntitySchema
     def belongs_to(name, **opts)
       Fields::Contracts::BelongsTo.(name, to_s, opts)
       specicifation = Fields::Specifications::BelongsTo.new(name, to_s, opts)
-      fk, object = Fields::Builders::BelongsTo.(name, self, specicifation.to_h)
+      fk, object = Fields::Builders::BelongsTo.(specicifation.to_h)
       setup_field(object, specicifation)
       setup_field(fk, specicifation)
     end

@@ -10,40 +10,22 @@ module EntitySchema
     module Builders
       # TODO: doc
       class BelongsTo < Base
-        def call(name, schema, options)
-          options = options.dup
-          opts = extract_options(options)
-          guard_unknown_options!(options, name)
+        def call(options)
+          fk     = create_fk(options)
+          object = create_object(options)
 
-          fk     = create_fk(name, schema, opts)
-          object = create_object(name, schema, opts)
-
-          create_observer(fk, object, opts)
+          create_observer(fk, object, options)
           [fk, object]
         end
 
         private
 
-        # rubocop:disable Naming/UncommunicativeMethodParamName
-        def extract_options(h)
-          delete_keys(h, all_keys).merge!(
-            pk: check!(:pk, h, [Symbol, nil]),
-            fk: check!(:fk, h, [Symbol, nil])
-          )
-        end
-        # rubocop:enable Naming/UncommunicativeMethodParamName
-
-        def create_fk(object_name, schema, opts)
-          name = fk_name(opts[:fk], object_name)
-          Fields::Builders::FkBelongsTo.(name, schema, create_fk_params(opts, name))
+        def create_fk(opts)
+          Fields::Builders::FkBelongsTo.(opts.slice(*fk_keys))
         end
 
-        def create_fk_params(opts, name)
-          opts.slice(*fk_keys).merge!(key: name)
-        end
-
-        def create_object(name, schema, opts)
-          Fields::Builders::ObjectBelongsTo.(name, schema, opts.slice(*object_keys))
+        def create_object(opts)
+          Fields::Builders::ObjectBelongsTo.(opts.slice(*object_keys))
         end
 
         def create_observer(fk, object, opts)

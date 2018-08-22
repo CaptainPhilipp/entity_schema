@@ -6,10 +6,10 @@ module EntitySchema
   module Fields
     # TODO: doc
     class Object < Abstract
-      def initialize(name, schema, options)
+      def initialize(options)
         @mapper     = options.delete(:mapper)
         @serializer = options.delete(:serializer)
-        super(name, schema, options)
+        super(options)
         guard_unknown_options!(options)
       end
 
