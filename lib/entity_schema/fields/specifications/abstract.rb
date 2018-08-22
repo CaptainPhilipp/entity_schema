@@ -14,10 +14,11 @@ module EntitySchema
         end
 
         def initialize(name, owner, raw_options)
-          @owner = owner
-          options = contract_options!(raw_options)
+          @owner            = owner
+          @contract_options = contract_options!(raw_options)
           guard_unknown_options!(raw_options, name)
-          @options = transform_options(name, options)
+
+          @options = transform_options(name, @contract_options)
         end
 
         def [](key)
@@ -30,7 +31,7 @@ module EntitySchema
 
         private
 
-        attr_reader :options
+        attr_reader :options, :owner
 
         # :nocov:
         def contract_options!(_raw_options)
@@ -78,7 +79,9 @@ module EntitySchema
         end
 
         def guard_unknown_options!(opts, name)
-          raise "Unknown options #{opts.inspect} given to `#{title} :#{name}`" if opts.any?
+          return if opts.empty?
+          raise "Unknown options #{opts.inspect} given to `#{title} :#{name}`\n" \
+                "  Known options: #{@contract_options.keys}"
         end
 
         def title

@@ -20,8 +20,7 @@ module EntitySchema
           )
         end
 
-        # TODO: test default_mapper, :mapper, :serializer
-        def transform_options(name, owner, o)
+        def transform_options(name, o)
           super.merge!(
             mapper:     find(callable(o[:mapper]),
                              owner_meth(o[:mapper], owner),

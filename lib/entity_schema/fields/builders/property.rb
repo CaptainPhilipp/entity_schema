@@ -10,12 +10,6 @@ module EntitySchema
       class Property < Base
         private
 
-        def create_field_params(name, _owner, o)
-          super.merge!(
-            predicate: o[:predicate]
-          )
-        end
-
         def field_klass
           Fields::Property
         end

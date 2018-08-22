@@ -23,12 +23,14 @@ module EntitySchema
 
     def property(name, **opts)
       specicifation = Fields::Specifications::Property.new(name, to_s, opts)
-      field = Fields::Builders::Property.(name, self, specicifation.to_h)
+      field         = Fields::Builders::Property.(name, self, specicifation.to_h)
       setup_field(field, specicifation)
     end
 
     def object(name, **opts)
-      setup_field Fields::Builders::Object.(name, self, opts)
+      specicifation = Fields::Specifications::Object.new(name, to_s, opts)
+      field         = Fields::Builders::Object.(name, self, specicifation.to_h)
+      setup_field field, specicifation
     end
 
     alias has_one object
