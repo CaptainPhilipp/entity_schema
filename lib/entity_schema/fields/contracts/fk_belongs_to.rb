@@ -5,9 +5,7 @@ require_relative 'common'
 module EntitySchema
   module Fields
     module Contracts
-      # TODO: doc
-      class FkBelongsTo < Common
-      end
+      FkBelongsTo = Common
     end
   end
 end

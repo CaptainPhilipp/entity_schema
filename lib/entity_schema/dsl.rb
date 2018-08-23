@@ -27,14 +27,14 @@ module EntitySchema
     end
 
     def property(name, **opts)
-      Fields::Contracts::Property.(name, to_s, opts)
+      Fields::Contracts::Property.(opts)
       specicifation = Fields::Specifications::Property.new(name, to_s, opts)
       field         = Fields::Builders::Property.(specicifation.to_h)
       setup_field(field, specicifation)
     end
 
     def object(name, **opts)
-      Fields::Contracts::Object.(name, to_s, opts)
+      Fields::Contracts::Object.(opts)
       specicifation = Fields::Specifications::Object.new(name, to_s, opts)
       field         = Fields::Builders::Object.(specicifation.to_h)
       setup_field(field, specicifation)
@@ -43,7 +43,7 @@ module EntitySchema
     alias has_one object
 
     def collection(name, **opts)
-      Fields::Contracts::Collection.(name, to_s, opts)
+      Fields::Contracts::Collection.(opts)
       specicifation = Fields::Specifications::Collection.new(name, to_s, opts)
       field         = Fields::Builders::Collection.(specicifation.to_h)
       setup_field(field, specicifation)
@@ -52,7 +52,7 @@ module EntitySchema
     alias has_many collection
 
     def belongs_to(name, **opts)
-      Fields::Contracts::BelongsTo.(name, to_s, opts)
+      Fields::Contracts::BelongsTo.(opts)
       specicifation = Fields::Specifications::BelongsTo.new(name, to_s, opts)
       fk, object = Fields::Builders::BelongsTo.(specicifation.to_h)
       setup_field(object, specicifation)
