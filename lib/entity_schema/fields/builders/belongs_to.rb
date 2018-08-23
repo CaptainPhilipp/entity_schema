@@ -9,7 +9,8 @@ require_relative '../observer_belongs_to'
 module EntitySchema
   module Fields
     module Builders
-      # TODO: doc
+      # Build two fields: for foreign key property and for related object
+      #   link foreign key with his object for interaction
       class BelongsTo
         include Singleton
 

@@ -6,7 +6,7 @@ require_relative 'abstract'
 
 module EntitySchema
   module Fields
-    # TODO: doc
+    # Simple field with any value
     class Property < Abstract
       def initialize(options)
         @predicate = options.predicate

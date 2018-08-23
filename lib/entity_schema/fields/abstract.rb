@@ -2,7 +2,8 @@
 
 module EntitySchema
   module Fields
-    # TODO: doc
+    # Specification for fiend behaviour: internal and external
+    #   will be used for build Field object and for setup Field object
     class Abstract
       attr_reader :src_key, :name
 

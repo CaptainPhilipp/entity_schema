@@ -4,7 +4,7 @@ require_relative 'abstract'
 
 module EntitySchema
   module Fields
-    # TODO: doc
+    # Associated object
     class Object < Abstract
       def initialize(specification)
         @mapper     = specification.mapper

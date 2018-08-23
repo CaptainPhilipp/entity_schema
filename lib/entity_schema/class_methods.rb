@@ -3,7 +3,7 @@
 require_relative 'schema'
 
 module EntitySchema
-  # TODO: doc
+  # Define empty schema or child schema from superchass schema
   module ClassMethods
     # rubocop:disable Metrics/MethodLength:
     def entity_schema

@@ -4,7 +4,7 @@ require_relative 'abstract'
 
 module EntitySchema
   module Fields
-    # TODO: doc
+    # associated array of objects
     class Collection < Object
       def set(obj, collection)
         case collection
