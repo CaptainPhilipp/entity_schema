@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 require_relative 'common'
-require_relative 'object'
-require_relative '../collection'
 
 module EntitySchema
   module Fields
     module Specifications
-      class Collection < Specifications::Object
+      class ObjectBelongsTo < Specifications::Object
       end
     end
   end

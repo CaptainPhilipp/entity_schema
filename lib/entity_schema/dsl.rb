@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-require_relative 'fields/specifications/property'
-require_relative 'fields/specifications/object'
-require_relative 'fields/specifications/collection'
-require_relative 'fields/specifications/belongs_to'
+require_relative 'specifications/property'
+require_relative 'specifications/object'
+require_relative 'specifications/collection'
+require_relative 'specifications/belongs_to'
 
-require_relative 'fields/contracts/property'
-require_relative 'fields/contracts/object'
-require_relative 'fields/contracts/collection'
-require_relative 'fields/contracts/belongs_to'
+require_relative 'contracts/property'
+require_relative 'contracts/object'
+require_relative 'contracts/collection'
+require_relative 'contracts/belongs_to'
 
 require_relative 'fields/property'
 require_relative 'fields/object'
 require_relative 'fields/collection'
-require_relative 'fields/builders/belongs_to'
+require_relative 'builders/belongs_to'
 
 require_relative 'setup_field'
 
