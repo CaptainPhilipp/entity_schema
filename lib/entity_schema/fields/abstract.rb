@@ -31,10 +31,6 @@ module EntitySchema
         obj.instance_variable_defined?(ivar_name)
       end
 
-      def delete(obj)
-        obj.remove_instance_variable(ivar_name)
-      end
-
       def set(obj, value)
         write(obj, value)
       end
@@ -60,10 +56,6 @@ module EntitySchema
       private
 
       attr_reader :ivar_name, :owner_name, :serialize_method
-
-      def private_method_called?(method, exception)
-        exception.message =~ /^private method `#{method}' called for #<.+>/
-      end
 
       def raise_public(subject)
         raise NameError, "Private #{subject} called for field `#{name}` of `#{owner_name}`"
