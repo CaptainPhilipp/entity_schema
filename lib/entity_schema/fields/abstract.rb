@@ -4,27 +4,26 @@ module EntitySchema
   module Fields
     # TODO: doc
     class Abstract
-      attr_reader :src_key, :name, :predicate_name, :setter_name, :ivar_name
+      attr_reader :src_key, :name
 
       def initialize(specification)
         @name       ||= specification.name
         @owner_name   = specification.owner_name
         @src_key    ||= specification.src_key
 
-        @public_getter = specification.public_getter # TODO: rm
-        @public_setter = specification.public_setter # TODO: rm
+        @public_getter = specification.public_getter?
+        @public_setter = specification.public_setter?
 
-        @ivar_name = :"@#{@name}"
+        @ivar_name = :"@#{name}"
       end
 
-      # set from public caller
       def public_set(obj, value)
-        raise_public_set unless @public_setter
+        raise_public('Setter') unless @public_setter
         set(obj, value)
       end
 
       def public_get(obj)
-        raise_public_get unless @public_getter
+        raise_public('Getter') unless @public_getter
         get(obj)
       end
 
@@ -50,16 +49,24 @@ module EntitySchema
         output[src_key] = read(obj) if given?(obj)
       end
 
-      private
-
-      attr_reader :owner_name, :serialize_method
-
-      def raise_public_set
-        raise NameError, "Private Setter called for field `#{name}` of `#{owner_name}`"
+      def public_getter?
+        @public_getter
       end
 
-      def raise_public_get
-        raise NameError, "Private Getter called for field `#{name}` of `#{owner_name}`"
+      def public_setter?
+        @public_setter
+      end
+
+      private
+
+      attr_reader :ivar_name, :owner_name, :serialize_method
+
+      def private_method_called?(method, exception)
+        exception.message =~ /^private method `#{method}' called for #<.+>/
+      end
+
+      def raise_public(subject)
+        raise NameError, "Private #{subject} called for field `#{name}` of `#{owner_name}`"
       end
 
       def read(obj)
