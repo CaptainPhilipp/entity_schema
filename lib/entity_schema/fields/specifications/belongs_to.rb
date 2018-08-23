@@ -13,8 +13,8 @@ module EntitySchema
 
         def transform_options(opts)
           super.merge!(
-            fk_name:    opts[:fk] || :"#{opts[:name]}_id",
-            fk_src_key: opts[:fk] || :"#{opts[:src_key]}_id"
+            fk:         opts[:fk] || :"#{opts[:name]}_id",
+            pk:         opts[:pk] || :id
           )
         end
       end

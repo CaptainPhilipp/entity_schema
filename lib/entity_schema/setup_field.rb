@@ -3,7 +3,7 @@
 module EntitySchema
   # TODO: remove this shit
   # TODO: doc
-  module DslHelper
+  module SetupField
     def setup_field(field, specification = nil)
       remove_method(field.name)           if method_defined?(field.name)
       remove_method(field.predicate_name) if method_defined?(field.predicate_name)

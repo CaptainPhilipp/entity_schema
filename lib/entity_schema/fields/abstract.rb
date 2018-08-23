@@ -7,15 +7,15 @@ module EntitySchema
       attr_reader :src_key, :name, :predicate_name, :setter_name, :ivar_name
 
       def initialize(options)
-        @name          = options.delete(:name)
+        @name        ||= options.delete(:name)
         @owner_name    = options.delete(:owner_name)
-        @src_key       = options.delete(:src_key)
-        @public_getter = options.delete(:public_getter)
-        @public_setter = options.delete(:public_setter)
+        @src_key     ||= options.delete(:src_key)
+        @public_getter ||= options.delete(:public_getter)
+        @public_setter ||= options.delete(:public_setter)
 
         @predicate_name = :"#{name}?"
         @setter_name    = :"#{name}="
-        @ivar_name      = :"@#{name}"
+        @ivar_name      = :"@#{@name}"
       end
 
       # set from public caller

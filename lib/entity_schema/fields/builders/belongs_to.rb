@@ -13,7 +13,6 @@ module EntitySchema
         def call(options)
           fk     = create_fk(options)
           object = create_object(options)
-
           create_observer(fk, object, options)
           [fk, object]
         end
@@ -47,15 +46,15 @@ module EntitySchema
         end
 
         def only_object_keys
-          %i[mapper map_to map_method serialize_method serializer serialize]
+          %i[name mapper map_to map_method serialize_method serializer serialize]
         end
 
         def only_fk_keys
-          [:predicate]
+          %i[predicate fk fk_src_key]
         end
 
         def common_keys
-          %i[key getter setter private]
+          %i[owner_name src_key getter setter private public_setter public_getter]
         end
 
         def fk_name(fk_name, object_name)

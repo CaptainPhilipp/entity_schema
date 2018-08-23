@@ -15,12 +15,12 @@ require_relative 'fields/builders/object'
 require_relative 'fields/builders/collection'
 require_relative 'fields/builders/belongs_to'
 
-require_relative 'dsl_helper'
+require_relative 'setup_field'
 
 module EntitySchema
   # class-level methods for define entity_schema
   module Dsl
-    include DslHelper
+    include SetupField
 
     def property?(name, **opts)
       property(name, opts.merge!(predicate: true))

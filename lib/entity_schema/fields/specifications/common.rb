@@ -15,11 +15,11 @@ module EntitySchema
         def transform_options(input)
           super.merge!(
             name:           input[:name],
-            owner_name:     input[:owner_name],
             src_key:        input[:key] || input[:name],
+            owner_name:     input[:owner_name],
             public_getter: !eql(input, getter: :private, private: [:getter, true]),
             public_setter: !eql(input, setter: :private, private: [:setter, true])
-          ) # .tap { |x| binding.pry if (input[:key] || input[:name]).nil? }
+          )
         end
       end
     end
