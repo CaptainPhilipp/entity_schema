@@ -1,10 +1,18 @@
 # frozen_string_literal: true
 
+require_relative 'abstract'
+
 module EntitySchema
   module Fields
     # Fk
     class FkBelongsTo < Property
       attr_accessor :observer_belongs_to
+
+      def initialize(options)
+        @name    = options.fk
+        @src_key = options.fk
+        super(options)
+      end
 
       def set(obj, value, notify_observer: true)
         super(obj, value).tap do |fk|

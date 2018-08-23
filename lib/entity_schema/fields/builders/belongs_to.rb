@@ -1,89 +1,44 @@
 # frozen_string_literal: true
 
-require_relative 'base'
-require_relative 'fk_belongs_to'
-require_relative 'object_belongs_to'
+require 'singleton'
+
+require_relative '../fk_belongs_to'
+require_relative '../object_belongs_to'
 require_relative '../observer_belongs_to'
 
 module EntitySchema
   module Fields
     module Builders
-      # TODO: doc
-      class BelongsTo < Base
-        def call(name, schema, options)
-          options = options.dup
-          opts = extract_options(options)
-          guard_unknown_options!(options, name)
+      # Build two fields: for foreign key property and for related object
+      #   link foreign key with his object for interaction
+      class BelongsTo
+        include Singleton
 
-          fk     = create_fk(name, schema, opts)
-          object = create_object(name, schema, opts)
-
-          create_observer(fk, object, opts)
+        def call(options)
+          fk     = create_fk(options)
+          object = create_object(options)
+          create_observer(fk, object, options)
           [fk, object]
+        end
+
+        def self.call(options)
+          instance.call(options)
         end
 
         private
 
-        # rubocop:disable Naming/UncommunicativeMethodParamName
-        def extract_options(h)
-          delete_keys(h, all_keys).merge!(
-            pk: check!(:pk, h, [Symbol, nil]),
-            fk: check!(:fk, h, [Symbol, nil])
-          )
-        end
-        # rubocop:enable Naming/UncommunicativeMethodParamName
-
-        def create_fk(object_name, schema, opts)
-          name = fk_name(opts[:fk], object_name)
-          Fields::Builders::FkBelongsTo.(name, schema, create_fk_params(opts, name))
+        def create_fk(opts)
+          Fields::FkBelongsTo.new(opts)
         end
 
-        def create_fk_params(opts, name)
-          opts.slice(*fk_keys).merge!(key: name)
-        end
-
-        def create_object(name, schema, opts)
-          Fields::Builders::ObjectBelongsTo.(name, schema, opts.slice(*object_keys))
+        def create_object(opts)
+          Fields::ObjectBelongsTo.new(opts)
         end
 
         def create_observer(fk, object, opts)
           observer = ObserverBelongsTo.new(fk, object, object_pk: opts[:pk] || :id)
           fk.observer_belongs_to     = observer
           object.observer_belongs_to = observer
-        end
-
-        def all_keys
-          common_keys + only_object_keys + only_fk_keys
-        end
-
-        def object_keys
-          common_keys + only_object_keys
-        end
-
-        def fk_keys
-          common_keys + only_fk_keys
-        end
-
-        def only_object_keys
-          %i[mapper map_to map_method serialize_method serializer serialize]
-        end
-
-        def only_fk_keys
-          [:predicate]
-        end
-
-        def common_keys
-          %i[key getter setter private]
-        end
-
-        def fk_name(fk_name, object_name)
-          fk_name || :"#{object_name}_id"
-        end
-
-        def delete_keys(input_hash, keys)
-          input_hash.slice(*keys).tap do
-            keys.each { |k| input_hash.delete(k) }
-          end
         end
       end
     end

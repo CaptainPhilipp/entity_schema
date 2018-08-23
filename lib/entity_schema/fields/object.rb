@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 
+require_relative 'abstract'
+
 module EntitySchema
   module Fields
-    # TODO: doc
+    # Associated object
     class Object < Abstract
-      def initialize(name, schema, options)
-        @mapper     = options.delete(:mapper)
-        @serializer = options.delete(:serializer)
-        super(name, schema, options)
-        guard_unknown_options!(options)
+      def initialize(specification)
+        @mapper     = specification.mapper
+        @serializer = specification.serializer
+        super(specification)
       end
 
       def get(obj)

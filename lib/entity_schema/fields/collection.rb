@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
+require_relative 'abstract'
+
 module EntitySchema
   module Fields
-    # TODO: doc
+    # associated array of objects
     class Collection < Object
       def set(obj, collection)
-        return super if collection.is_a?(Array) || collection.nil?
-        raise ArgumentError, 'collection field must be Array'
+        case collection
+        when Array, nil then super
+        else raise ArgumentError, 'collection field must be Array'
+        end
       end
 
       def get(obj)

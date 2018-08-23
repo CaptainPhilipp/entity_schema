@@ -1,40 +1,62 @@
 # frozen_string_literal: true
 
-require_relative 'fields/builders/property'
-require_relative 'fields/builders/object'
-require_relative 'fields/builders/collection'
+require_relative 'fields/specifications/property'
+require_relative 'fields/specifications/object'
+require_relative 'fields/specifications/collection'
+require_relative 'fields/specifications/belongs_to'
+
+require_relative 'fields/contracts/property'
+require_relative 'fields/contracts/object'
+require_relative 'fields/contracts/collection'
+require_relative 'fields/contracts/belongs_to'
+
+require_relative 'fields/property'
+require_relative 'fields/object'
+require_relative 'fields/collection'
 require_relative 'fields/builders/belongs_to'
-require_relative 'dsl_helper'
+
+require_relative 'setup_field'
 
 module EntitySchema
   # class-level methods for define entity_schema
   module Dsl
-    include DslHelper
+    include SetupField
 
     def property?(name, **opts)
       property(name, opts.merge!(predicate: true))
     end
 
     def property(name, **opts)
-      setup_field Fields::Builders::Property.(name, self, opts)
+      Fields::Contracts::Property.(opts)
+      specicifation = Fields::Specifications::Property.new(name, to_s, opts)
+      field         = Fields::Property.new(specicifation)
+      setup_field(field, specicifation)
     end
 
     def object(name, **opts)
-      setup_field Fields::Builders::Object.(name, self, opts)
+      Fields::Contracts::Object.(opts)
+      specicifation = Fields::Specifications::Object.new(name, to_s, opts)
+      field         = Fields::Object.new(specicifation)
+      setup_field(field, specicifation)
     end
 
     alias has_one object
 
     def collection(name, **opts)
-      setup_field Fields::Builders::Collection.(name, self, opts)
+      Fields::Contracts::Collection.(opts)
+      specicifation = Fields::Specifications::Collection.new(name, to_s, opts)
+      field         = Fields::Collection.new(specicifation)
+      setup_field(field, specicifation)
     end
 
     alias has_many collection
 
     def belongs_to(name, **opts)
-      fk, object = Fields::Builders::BelongsTo.(name, self, opts)
-      setup_field object
-      setup_field fk
+      Fields::Contracts::BelongsTo.(opts)
+      specicifation = Fields::Specifications::BelongsTo.new(name, to_s, opts)
+      fk, object = Fields::Builders::BelongsTo.(specicifation)
+      setup_field(object, specicifation)
+      setup_field(fk, specicifation)
     end
   end
 end

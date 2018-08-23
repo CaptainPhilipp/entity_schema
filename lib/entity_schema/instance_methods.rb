@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module EntitySchema
-  # TODO: doc
+  # methods that will be available for interact
+  #   with Entity instances
   module InstanceMethods
     def initialize(params = EMPTY_HASH)
       update_attributes(params)

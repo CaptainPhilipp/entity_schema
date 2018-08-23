@@ -2,18 +2,15 @@
 
 require_relative 'abstract'
 
+require_relative 'abstract'
+
 module EntitySchema
   module Fields
-    # TODO: doc
+    # Simple field with any value
     class Property < Abstract
-      def initialize(name, schema, options)
-        @predicate = options.delete(:predicate)
-        super(name, schema, options)
-        guard_unknown_options!(options)
-      end
-
-      def predicate?
-        @predicate
+      def initialize(options)
+        @predicate = options.predicate
+        super(options)
       end
 
       def get(obj)

@@ -2,39 +2,34 @@
 
 module EntitySchema
   module Fields
-    # TODO: doc
+    # Specification for fiend behaviour: internal and external
+    #   will be used for build Field object and for setup Field object
     class Abstract
-      attr_reader :src_key, :name, :predicate_name, :setter_name, :ivar_name
+      attr_reader :src_key, :name
 
-      def initialize(name, owner_name, options)
-        @name = name.to_sym
-        @owner_name = owner_name
-        @src_key       = options.delete(:src_key)
-        @public_getter = options.delete(:public_getter)
-        @public_setter = options.delete(:public_setter)
+      def initialize(specification)
+        @name       ||= specification.name
+        @owner_name   = specification.owner_name
+        @src_key    ||= specification.src_key
 
-        @predicate_name = :"#{name}?"
-        @setter_name    = :"#{name}="
-        @ivar_name      = :"@#{name}"
+        @public_getter = specification.public_getter?
+        @public_setter = specification.public_setter?
+
+        @ivar_name = :"@#{name}"
       end
 
-      # set from public caller
       def public_set(obj, value)
-        raise_public_set unless public_setter?
+        raise_public('Setter') unless @public_setter
         set(obj, value)
       end
 
       def public_get(obj)
-        raise_public_get unless public_getter?
+        raise_public('Getter') unless @public_getter
         get(obj)
       end
 
       def given?(obj)
         obj.instance_variable_defined?(ivar_name)
-      end
-
-      def delete(obj)
-        obj.remove_instance_variable(ivar_name)
       end
 
       def set(obj, value)
@@ -46,10 +41,6 @@ module EntitySchema
         raise NotImplementedError
       end
       # :nocov:
-
-      def predicate?
-        false
-      end
 
       def serialize(obj, output)
         output[src_key] = read(obj) if given?(obj)
@@ -65,18 +56,10 @@ module EntitySchema
 
       private
 
-      attr_reader :owner_name, :serialize_method
+      attr_reader :ivar_name, :owner_name, :serialize_method
 
-      def raise_public_set
-        raise NameError, "Private Setter called for field `#{name}` of `#{owner_name}`"
-      end
-
-      def raise_public_get
-        raise NameError, "Private Getter called for field `#{name}` of `#{owner_name}`"
-      end
-
-      def guard_unknown_options!(opts)
-        raise "Unknown options given: #{opts.inspect}" if opts.any?
+      def raise_public(subject)
+        raise NameError, "Private #{subject} called for field `#{name}` of `#{owner_name}`"
       end
 
       def read(obj)
