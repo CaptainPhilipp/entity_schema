@@ -7,7 +7,6 @@ require_relative '../collection'
 module EntitySchema
   module Fields
     module Specifications
-      # TODO: doc
       class Collection < Specifications::Object
       end
     end

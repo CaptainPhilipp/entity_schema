@@ -7,7 +7,6 @@ require_relative 'object_belongs_to'
 module EntitySchema
   module Fields
     module Specifications
-      # TODO: doc
       class BelongsTo < Object
         private
 

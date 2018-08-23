@@ -40,6 +40,7 @@ Style/Documentation:
     - 'lib/entity_schema/fields/property.rb'
     - 'lib/entity_schema/instance_methods.rb'
     - 'lib/entity_schema/fields/specifications/belongs_to.rb'
+    - 'lib/entity_schema/fields/specifications/common.rb'
     - 'lib/entity_schema/fields/specifications/fk_belongs_to.rb'
     - 'lib/entity_schema/fields/specifications/object.rb'
     - 'lib/entity_schema/fields/specifications/property.rb'

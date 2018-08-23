@@ -5,10 +5,6 @@ require_relative 'abstract'
 module EntitySchema
   module Fields
     module Specifications
-      # TODO: doc
-      # TODO: refactor overweight class
-      # Builder is a Functional Object for creating Field using given options
-      # In Abstract class defined interface and methods for processing any given options
       class Common < Abstract
         private
 

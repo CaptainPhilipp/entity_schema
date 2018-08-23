@@ -3,8 +3,7 @@
 module EntitySchema
   module Fields
     module Specifications
-      # TODO: doc
-      # transform raw valid options to usefull options
+      # Transform raw valid options to usefull options
       class Abstract
         def initialize(name, owner_name, raw_options)
           @options = transform_options(name: name,

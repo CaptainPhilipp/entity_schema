@@ -5,7 +5,6 @@ require_relative 'common'
 module EntitySchema
   module Fields
     module Specifications
-      # TODO: doc
       class Property < Common
         private
 

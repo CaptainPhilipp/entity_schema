@@ -6,7 +6,6 @@ require_relative '../object'
 module EntitySchema
   module Fields
     module Specifications
-      # TODO: doc
       class Object < Common
         private
 
@@ -20,8 +19,6 @@ module EntitySchema
                              serializer(o))
           )
         end
-
-        # helpers
 
         def mapper(map_to, map_method)
           return if map_to.nil?
