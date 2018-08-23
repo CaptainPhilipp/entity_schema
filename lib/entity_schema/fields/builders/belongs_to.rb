@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
-require_relative 'base'
-require_relative 'fk_belongs_to'
-require_relative 'object_belongs_to'
+require 'singleton'
+
+require_relative '../fk_belongs_to'
+require_relative '../object_belongs_to'
 require_relative '../observer_belongs_to'
 
 module EntitySchema
   module Fields
     module Builders
       # TODO: doc
-      class BelongsTo < Base
+      class BelongsTo
+        include Singleton
+
         def call(options)
           fk     = create_fk(options)
           object = create_object(options)
@@ -17,14 +20,18 @@ module EntitySchema
           [fk, object]
         end
 
+        def self.call(options)
+          instance.call(options)
+        end
+
         private
 
         def create_fk(opts)
-          Fields::Builders::FkBelongsTo.(opts.slice(*fk_keys))
+          Fields::FkBelongsTo.new(opts.slice(*fk_keys))
         end
 
         def create_object(opts)
-          Fields::Builders::ObjectBelongsTo.(opts.slice(*object_keys))
+          Fields::ObjectBelongsTo.new(opts.slice(*object_keys))
         end
 
         def create_observer(fk, object, opts)

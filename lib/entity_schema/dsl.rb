@@ -10,9 +10,9 @@ require_relative 'fields/contracts/object'
 require_relative 'fields/contracts/collection'
 require_relative 'fields/contracts/belongs_to'
 
-require_relative 'fields/builders/property'
-require_relative 'fields/builders/object'
-require_relative 'fields/builders/collection'
+require_relative 'fields/property'
+require_relative 'fields/object'
+require_relative 'fields/collection'
 require_relative 'fields/builders/belongs_to'
 
 require_relative 'setup_field'
@@ -29,14 +29,14 @@ module EntitySchema
     def property(name, **opts)
       Fields::Contracts::Property.(opts)
       specicifation = Fields::Specifications::Property.new(name, to_s, opts)
-      field         = Fields::Builders::Property.(specicifation.to_h)
+      field         = Fields::Property.new(specicifation.to_h)
       setup_field(field, specicifation)
     end
 
     def object(name, **opts)
       Fields::Contracts::Object.(opts)
       specicifation = Fields::Specifications::Object.new(name, to_s, opts)
-      field         = Fields::Builders::Object.(specicifation.to_h)
+      field         = Fields::Object.new(specicifation.to_h)
       setup_field(field, specicifation)
     end
 
@@ -45,7 +45,7 @@ module EntitySchema
     def collection(name, **opts)
       Fields::Contracts::Collection.(opts)
       specicifation = Fields::Specifications::Collection.new(name, to_s, opts)
-      field         = Fields::Builders::Collection.(specicifation.to_h)
+      field         = Fields::Collection.new(specicifation.to_h)
       setup_field(field, specicifation)
     end
 

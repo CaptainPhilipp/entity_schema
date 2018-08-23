@@ -3,6 +3,7 @@
 module EntitySchema
   module Fields
     module Contracts
+      # Check data with strict contract, described with Hash-based DSL
       class Contract
         def initialize(rules)
           @rules = rules
@@ -12,7 +13,7 @@ module EntitySchema
           self.class.new(rules.merge(other.to_h))
         end
 
-        def call(raw_options, skip_unknown: false)
+        def call(raw_options, skip_unknown: false) # rubocop:disable Metrics/AbcSize
           raw_options.each do |key, value|
             rules.key?(key) || skip_unknown || raise_unknown!(key, value)
 
