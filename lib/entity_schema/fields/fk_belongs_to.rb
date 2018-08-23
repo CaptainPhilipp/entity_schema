@@ -9,11 +9,9 @@ module EntitySchema
       attr_accessor :observer_belongs_to
 
       def initialize(options)
-        @name    = options.delete(:fk)
-        @src_key = @name
-        options.delete(:src_key)
+        @name    = options.fk
+        @src_key = options.fk
         super(options)
-        guard_unknown_options!(options)
       end
 
       def set(obj, value, notify_observer: true)

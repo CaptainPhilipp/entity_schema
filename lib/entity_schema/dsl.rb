@@ -29,14 +29,14 @@ module EntitySchema
     def property(name, **opts)
       Fields::Contracts::Property.(opts)
       specicifation = Fields::Specifications::Property.new(name, to_s, opts)
-      field         = Fields::Property.new(specicifation.to_h)
+      field         = Fields::Property.new(specicifation)
       setup_field(field, specicifation)
     end
 
     def object(name, **opts)
       Fields::Contracts::Object.(opts)
       specicifation = Fields::Specifications::Object.new(name, to_s, opts)
-      field         = Fields::Object.new(specicifation.to_h)
+      field         = Fields::Object.new(specicifation)
       setup_field(field, specicifation)
     end
 
@@ -45,7 +45,7 @@ module EntitySchema
     def collection(name, **opts)
       Fields::Contracts::Collection.(opts)
       specicifation = Fields::Specifications::Collection.new(name, to_s, opts)
-      field         = Fields::Collection.new(specicifation.to_h)
+      field         = Fields::Collection.new(specicifation)
       setup_field(field, specicifation)
     end
 
@@ -54,7 +54,7 @@ module EntitySchema
     def belongs_to(name, **opts)
       Fields::Contracts::BelongsTo.(opts)
       specicifation = Fields::Specifications::BelongsTo.new(name, to_s, opts)
-      fk, object = Fields::Builders::BelongsTo.(specicifation.to_h)
+      fk, object = Fields::Builders::BelongsTo.(specicifation)
       setup_field(object, specicifation)
       setup_field(fk, specicifation)
     end

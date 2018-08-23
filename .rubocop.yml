@@ -21,18 +21,6 @@ Metrics/AbcSize:
   Exclude:
     - 'lib/entity_schema/setup_field.rb'
 
-Metrics/CyclomaticComplexity:
-  Exclude:
-    - 'lib/entity_schema/setup_field.rb'
-
-Metrics/PerceivedComplexity:
-  Exclude:
-    - 'lib/entity_schema/setup_field.rb'
-
-Metrics/MethodLength:
-  Exclude:
-    - 'lib/entity_schema/setup_field.rb'
-
 Style/Documentation:
   Exclude:
     - 'lib/entity_schema.rb'

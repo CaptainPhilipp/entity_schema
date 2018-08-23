@@ -9,13 +9,8 @@ module EntitySchema
     # TODO: doc
     class Property < Abstract
       def initialize(options)
-        @predicate = options.delete(:predicate)
+        @predicate = options.predicate
         super(options)
-        guard_unknown_options!(options)
-      end
-
-      def predicate?
-        @predicate
       end
 
       def get(obj)

@@ -4,23 +4,12 @@ module EntitySchema
   module Fields
     module Specifications
       # TODO: doc
-      # TODO: refactor overweight class
-      # Builder is a Functional Object for creating Field using given options
-      # In Abstract class defined interface and methods for processing any given options
-      # ? may be extract options processing to another class
+      # transform raw valid options to usefull options
       class Abstract
         def initialize(name, owner_name, raw_options)
           @options = transform_options(name: name,
                                        owner_name: owner_name,
                                        **raw_options)
-        end
-
-        def owner
-          options[:owner]
-        end
-
-        def name
-          options[:name]
         end
 
         def [](key)
@@ -31,13 +20,38 @@ module EntitySchema
           options.dup
         end
 
+        def method_missing(key, *_args, **_opts)
+          return options[key] if options.key?(key)
+          root = without_predicate(key)
+          return options[root] if bool_key?(root)
+          super
+        end
+
+        def respond_to_missing?(key)
+          options.key?(key) || bool_key?(without_predicate(key))
+        end
+
         private
 
         attr_reader :options
 
         # Hook for ancestors
         def transform_options(_options)
-          Hash.new { |_, k| raise "Gem works wrong: missed option `#{k.inspect}` called" }
+          new_strict_hash
+        end
+
+        def bool_key?(key)
+          [true, false].include? options.fetch(key, nil)
+        end
+
+        def without_predicate(key)
+          key.to_s.delete('?').to_sym
+        end
+
+        def new_strict_hash
+          Hash.new do |h, k|
+            raise "Gem works wrong: missed option `#{k.inspect}` called. Options is: #{h.keys}"
+          end
         end
 
         def find(*alternatives)
