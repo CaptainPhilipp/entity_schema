@@ -3,9 +3,7 @@
 require_relative 'object'
 
 module EntitySchema
-  module Fields
-    module Contracts
-      ObjectBelongsTo = Object
-    end
+  module Contracts
+    ObjectBelongsTo = Object
   end
 end

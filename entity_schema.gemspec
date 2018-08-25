@@ -12,8 +12,8 @@ Gem::Specification.new do |spec|
   spec.email         = ['ph-s@mail.ru']
 
   spec.summary       = 'DSL for describe Entities'
-  spec.description   = 'Simple DSL for describe schema of mapping Hash to entity Object, ' \
-                       'and then vice-versa'
+  spec.description   = 'Simple DSL for describe schema of mapping Hash to entity Object ' \
+                       'and vice-versa'
   spec.homepage      = 'https://github.com/CaptainPhilipp/entity_schema'
   spec.license       = 'MIT'
 

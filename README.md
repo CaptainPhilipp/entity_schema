@@ -101,12 +101,10 @@ _TODO: description_
 
 ### `timestamps`
 
-_Not implemented_
-
 Just sugar, same as:
 ```ruby
-property :created_at, **opts
-property :updated_at, **opts
+property :created_at, private: :setter, **opts
+property :updated_at, private: :setter, **opts
 ```
 
 ### `object`

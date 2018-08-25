@@ -27,36 +27,42 @@ module EntitySchema
     end
 
     def property(name, **opts)
-      Fields::Contracts::Property.(opts)
-      specicifation = Fields::Specifications::Property.new(name, to_s, opts)
+      Contracts::Property.(name, **opts)
+      specicifation = Specifications::Property.new(name, to_s, opts)
       field         = Fields::Property.new(specicifation)
       setup_field(field, specicifation)
     end
 
-    def object(name, **opts)
-      Fields::Contracts::Object.(opts)
-      specicifation = Fields::Specifications::Object.new(name, to_s, opts)
+    def object(name, map_to = nil, **opts)
+      Contracts::Object.(name, map_to, **opts)
+      specicifation = Specifications::Object.new(name, to_s, __merge(opts, map_to: map_to))
       field         = Fields::Object.new(specicifation)
       setup_field(field, specicifation)
     end
 
     alias has_one object
 
-    def collection(name, **opts)
-      Fields::Contracts::Collection.(opts)
-      specicifation = Fields::Specifications::Collection.new(name, to_s, opts)
+    def collection(name, map_to = nil, **opts)
+      Contracts::Collection.(name, map_to, **opts)
+      specicifation = Specifications::Collection.new(name, to_s, __merge(opts, map_to: map_to))
       field         = Fields::Collection.new(specicifation)
       setup_field(field, specicifation)
     end
 
     alias has_many collection
 
-    def belongs_to(name, **opts)
-      Fields::Contracts::BelongsTo.(opts)
-      specicifation = Fields::Specifications::BelongsTo.new(name, to_s, opts)
-      fk, object = Fields::Builders::BelongsTo.(specicifation)
+    def belongs_to(name, map_to = nil, **opts)
+      Contracts::BelongsTo.(name, map_to, **opts)
+      specicifation = Specifications::BelongsTo.new(name, to_s, __merge(opts, map_to: map_to))
+      fk, object    = Fields::Builders::BelongsTo.(specicifation)
       setup_field(object, specicifation)
       setup_field(fk, specicifation)
+    end
+
+    private
+
+    def __merge(opts, other)
+      opts.merge(other) { |_, old, new| new.nil? ? old : new }
     end
   end
 end

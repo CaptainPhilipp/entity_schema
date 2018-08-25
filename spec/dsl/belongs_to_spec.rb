@@ -29,13 +29,13 @@ RSpec.describe 'EntitySchema belongs_to' do
         'Entity'
       end
 
-      belongs_to :normal,         map_to: OpenStruct
-      belongs_to :normal2,        map_to: OpenStruct
-      belongs_to :custom,         map_to: OpenStruct, fk: :custom_uid, pk: :uid
-      belongs_to :map_method,     map_to: RelatedObject, map_method: :custom_new
-      belongs_to :serialize,      map_to: RelatedObject, serialize: :serialize
-      belongs_to :key_object_key, map_to: OpenStruct, key: :object_key
-      belongs_to :private_true,   map_to: OpenStruct, private: true
+      belongs_to :normal,         OpenStruct
+      belongs_to :normal2,        OpenStruct
+      belongs_to :custom,         OpenStruct,    fk: :custom_uid, pk: :uid
+      belongs_to :map_method,     RelatedObject, map_method: :custom_new
+      belongs_to :serialize,      RelatedObject, serialize: :serialize
+      belongs_to :key_object_key, OpenStruct,    key: :object_key
+      belongs_to :private_true,   OpenStruct,    private: true
 
       def self.serialize(input)
         input.to_h

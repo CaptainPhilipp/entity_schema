@@ -4,10 +4,8 @@ require_relative 'common'
 require_relative 'object'
 
 module EntitySchema
-  module Fields
-    module Specifications
-      class Collection < Specifications::Object
-      end
+  module Specifications
+    class Collection < Specifications::Object
     end
   end
 end

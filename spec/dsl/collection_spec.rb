@@ -29,12 +29,12 @@ RSpec.describe 'EntitySchema collection' do
         'Entity'
       end
 
-      collection :normal,          map_to: OpenStruct
-      collection :map_method,      map_to: CustomStruct, map_method: :custom_new
-      collection :serialize,       map_to: CustomStruct, serialize: :serialize
-      collection :key_object_key,  map_to: OpenStruct, key: :object_key
-      collection :private_true,    map_to: OpenStruct, private: true
-      has_many   :has_many,        map_to: OpenStruct
+      collection :normal,          OpenStruct
+      collection :map_method,      CustomStruct, map_method: :custom_new
+      collection :serialize,       CustomStruct, serialize: :serialize
+      collection :key_object_key,  OpenStruct, key: :object_key
+      collection :private_true,    OpenStruct, private: true
+      has_many   :has_many,        OpenStruct
 
       def self.serialize(input)
         input.to_h

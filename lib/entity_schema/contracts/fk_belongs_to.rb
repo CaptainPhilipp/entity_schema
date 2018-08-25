@@ -3,9 +3,7 @@
 require_relative 'common'
 
 module EntitySchema
-  module Fields
-    module Contracts
-      FkBelongsTo = Common
-    end
+  module Contracts
+    FkBelongsTo = Common
   end
 end
