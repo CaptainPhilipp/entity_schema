@@ -17,8 +17,8 @@ class Product
 
   object :size, map_to: Values::Size
 
-  belongs_to :color,   map_to: Color, pk: :color_uid, fk: :uid
-  has_many   :seasons, map_to: Season
+  belongs_to :color,   Color, pk: :color_uid, fk: :uid
+  has_many   :seasons, Season
 end
 ```
 
