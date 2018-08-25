@@ -3,7 +3,7 @@
 require_relative 'common'
 
 module EntitySchema
-  module Specifications
+  module Transformers
     class Property < Common
       private
 

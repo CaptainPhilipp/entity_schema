@@ -1,37 +1,22 @@
 # frozen_string_literal: true
 
+require 'singleton'
+
 module EntitySchema
-  module Specifications
+  module Transformers
     # Transform raw valid options to usefull options
     class Abstract
-      def initialize(name, owner_name, raw_options)
-        @options = transform_options(name: name,
-                                     owner_name: owner_name,
-                                     **raw_options)
+      include Singleton
+
+      def self.call(*args)
+        instance.call(*args)
       end
 
-      def [](key)
-        options.fetch(key, nil)
-      end
-
-      def to_h
-        options.dup
-      end
-
-      def method_missing(key, *_args, **_opts)
-        return options[key] if options.key?(key)
-        root = without_predicate(key)
-        return options[root] if bool_key?(root)
-        super
-      end
-
-      def respond_to_missing?(key)
-        options.key?(key) || bool_key?(without_predicate(key))
+      def call(name, owner_name, type, raw_options)
+        transform_options(name: name, owner_name: owner_name, map_to: type, **raw_options)
       end
 
       private
-
-      attr_reader :options
 
       # Hook for ancestors
       def transform_options(_options)

@@ -7,8 +7,8 @@ module EntitySchema
     # Associated object
     class Object < Abstract
       def initialize(specification)
-        @mapper     = specification.mapper
-        @serializer = specification.serializer
+        @mapper     = specification[:mapper]
+        @serializer = specification[:serializer]
         super(specification)
       end
 

@@ -26,4 +26,4 @@ Style/Documentation:
     - 'spec/**/*'
     - 'test/**/*'
     - 'lib/entity_schema.rb'
-    - 'lib/entity_schema/specifications/*'
+    - 'lib/entity_schema/transformers/*'

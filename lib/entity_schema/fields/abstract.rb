@@ -5,26 +5,28 @@ module EntitySchema
     # Specification for fiend behaviour: internal and external
     #   will be used for build Field object and for setup Field object
     class Abstract
-      attr_reader :src_key, :name
+      Specification = Struct.new(:public_getter, :public_setter, :predicate)
 
-      def initialize(specification)
-        @name       ||= specification.name
-        @owner_name   = specification.owner_name
-        @src_key    ||= specification.src_key
+      attr_reader :src_key, :name, :specification
 
-        @public_getter = specification.public_getter?
-        @public_setter = specification.public_setter?
-
+      def initialize(options)
+        @name       ||= options[:name]
+        @owner_name   = options[:owner_name]
+        @src_key    ||= options[:src_key]
         @ivar_name = :"@#{name}"
+
+        @specification = Specification.new
+        @specification.public_getter = options[:public_getter]
+        @specification.public_setter = options[:public_setter]
       end
 
       def public_set(obj, value)
-        raise_public('Setter') unless @public_setter
+        raise_public('Setter') unless specification.public_setter
         set(obj, value)
       end
 
       def public_get(obj)
-        raise_public('Getter') unless @public_getter
+        raise_public('Getter') unless specification.public_getter
         get(obj)
       end
 
@@ -44,14 +46,6 @@ module EntitySchema
 
       def serialize(obj, output)
         output[src_key] = read(obj) if given?(obj)
-      end
-
-      def public_getter?
-        @public_getter
-      end
-
-      def public_setter?
-        @public_setter
       end
 
       private

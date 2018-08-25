@@ -9,8 +9,8 @@ module EntitySchema
     # Simple field with any value
     class Property < Abstract
       def initialize(options)
-        @predicate = options.predicate
         super(options)
+        specification.predicate = options[:predicate]
       end
 
       def get(obj)

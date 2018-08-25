@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative 'specifications/property'
-require_relative 'specifications/object'
-require_relative 'specifications/collection'
-require_relative 'specifications/belongs_to'
+require_relative 'transformers/property'
+require_relative 'transformers/object'
+require_relative 'transformers/collection'
+require_relative 'transformers/belongs_to'
 
 require_relative 'contracts/property'
 require_relative 'contracts/object'
@@ -28,35 +28,32 @@ module EntitySchema
 
     def property(name, **opts)
       Contracts::Property.(name, **opts)
-      specicifation = Specifications::Property.new(name, to_s, opts)
-      field         = Fields::Property.new(specicifation)
-      setup_field(field, specicifation)
+      options =   Transformers::Property.(name, to_s, nil, opts)
+      setup_field Fields::Property.new(options)
     end
 
-    def object(name, map_to = nil, **opts)
-      Contracts::Object.(name, map_to, **opts)
-      specicifation = Specifications::Object.new(name, to_s, __merge(opts, map_to: map_to))
-      field         = Fields::Object.new(specicifation)
-      setup_field(field, specicifation)
+    def object(name, type = nil, **opts)
+      Contracts::Object.(name, type, **opts)
+      options =   Transformers::Object.(name, to_s, type, opts)
+      setup_field Fields::Object.new(options)
     end
 
     alias has_one object
 
-    def collection(name, map_to = nil, **opts)
-      Contracts::Collection.(name, map_to, **opts)
-      specicifation = Specifications::Collection.new(name, to_s, __merge(opts, map_to: map_to))
-      field         = Fields::Collection.new(specicifation)
-      setup_field(field, specicifation)
+    def collection(name, type = nil, **opts)
+      Contracts::Collection.(name, type, **opts)
+      options =   Transformers::Collection.(name, to_s, type, opts)
+      setup_field Fields::Collection.new(options)
     end
 
     alias has_many collection
 
-    def belongs_to(name, map_to = nil, **opts)
-      Contracts::BelongsTo.(name, map_to, **opts)
-      specicifation = Specifications::BelongsTo.new(name, to_s, __merge(opts, map_to: map_to))
-      fk, object    = Fields::Builders::BelongsTo.(specicifation)
-      setup_field(object, specicifation)
-      setup_field(fk, specicifation)
+    def belongs_to(name, type = nil, **opts)
+      Contracts::BelongsTo.(name, type, **opts)
+      options    = Transformers::BelongsTo.(name, to_s, type, opts)
+      fk, object = Fields::Builders::BelongsTo.(options)
+      setup_field(object)
+      setup_field(fk)
     end
 
     private

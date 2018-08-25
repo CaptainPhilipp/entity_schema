@@ -3,7 +3,7 @@
 require_relative 'abstract'
 
 module EntitySchema
-  module Specifications
+  module Transformers
     class Common < Abstract
       private
 

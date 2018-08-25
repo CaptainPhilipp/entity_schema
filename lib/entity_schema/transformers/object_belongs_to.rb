@@ -3,8 +3,8 @@
 require_relative 'common'
 
 module EntitySchema
-  module Specifications
-    class ObjectBelongsTo < Specifications::Object
+  module Transformers
+    class ObjectBelongsTo < Transformers::Object
     end
   end
 end

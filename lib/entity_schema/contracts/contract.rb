@@ -25,16 +25,16 @@ module EntitySchema
         freeze
       end
 
-      def <<(other)
-        other_rules = other.to_h
-        self.class.new(rules.merge(other_rules))
-      end
-
       def +(other)
         args        = other.to_a
         options     = args.last.is_a?(Hash) ? args.pop : {}
         other_rules = to_params_hash(args).merge(options)
-        self << rules.merge(other_rules)
+        merge(rules.merge(other_rules))
+      end
+
+      def merge(other)
+        other_rules = other.to_h
+        self.class.new(rules.merge(other_rules))
       end
 
       def call(*params, skip_unknown: false, **options) # rubocop:disable Metrics/AbcSize

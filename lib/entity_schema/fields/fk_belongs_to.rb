@@ -9,8 +9,8 @@ module EntitySchema
       attr_accessor :observer_belongs_to
 
       def initialize(options)
-        @name    = options.fk
-        @src_key = options.fk
+        @name    = options[:fk]
+        @src_key = options[:fk]
         super(options)
       end
 

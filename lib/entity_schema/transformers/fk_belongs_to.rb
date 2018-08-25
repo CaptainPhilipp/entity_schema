@@ -3,7 +3,7 @@
 require_relative 'common'
 
 module EntitySchema
-  module Specifications
+  module Transformers
     class FkBelongsTo < Common
       def transform_options(_name, _owner, _options)
         super.merge!(predicate: false)

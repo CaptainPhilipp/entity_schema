@@ -5,7 +5,7 @@ require_relative 'object_belongs_to'
 
 module EntitySchema
   module Contracts
-    BelongsTo = FkBelongsTo << ObjectBelongsTo + [
+    BelongsTo = FkBelongsTo + ObjectBelongsTo + [
       fk: { eq: [nil], type: Symbol },
       pk: { eq: [nil], type: Symbol }
     ]
