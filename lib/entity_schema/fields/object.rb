@@ -20,8 +20,7 @@ module EntitySchema
       def serialize(obj, output)
         return unless given?(obj)
         value = read(obj)
-        return output[src_key] = value if value.is_a?(Hash)
-        output[src_key] = unwrap(value)
+        output[src_key] = (value.is_a?(Hash) ? value : unwrap(value))
       end
 
       private

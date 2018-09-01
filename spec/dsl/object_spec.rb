@@ -31,8 +31,8 @@ RSpec.describe 'EntitySchema object' do
 
       object :normal,          OpenStruct
       object :map_method,      ValueObject, map_method: :custom_new
-      object :serialize,       ValueObject, serialize: :transformed_serialize
-      object :key_object_key,  OpenStruct, key: :object_key
+      object :serialize,       'ValueObject', serialize: :transformed_serialize
+      object :key_object_key,  :OpenStruct, key: :object_key
       object :private_true,    OpenStruct, private: true
       has_one :has_one,        OpenStruct
 

@@ -31,8 +31,8 @@ RSpec.describe 'EntitySchema collection' do
 
       collection :normal,          OpenStruct
       collection :map_method,      CustomStruct, map_method: :custom_new
-      collection :serialize,       CustomStruct, serialize: :serialize
-      collection :key_object_key,  OpenStruct, key: :object_key
+      collection :serialize,       :CustomStruct, serialize: :serialize
+      collection :key_object_key,  'OpenStruct', key: :object_key
       collection :private_true,    OpenStruct, private: true
       has_many   :has_many,        OpenStruct
 

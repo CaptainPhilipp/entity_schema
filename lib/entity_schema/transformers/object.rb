@@ -21,7 +21,14 @@ module EntitySchema
       def mapper(map_to, map_method)
         return if map_to.nil?
         map_method ||= :new
-        ->(hash) { map_to.public_send(map_method, hash) }
+
+        lambda do |hash|
+          if map_to.is_a?(Class)
+            map_to.public_send(map_method, hash)
+          else
+            Object.const_get(map_to).public_send(map_method, hash)
+          end
+        end
       end
 
       def default_mapper

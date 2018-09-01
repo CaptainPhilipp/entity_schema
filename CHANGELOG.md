@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.1.7]
+### Added
++ `map_to:` option can receive String or Symbol with class name, that will be used for `#const_get` in runtime, after schema building
+It needed for prevent constant cross-requirements lock in Ruby: when file `foo.rb` contains class `Foo`, that depends on class `Bar` from file `bar.rb`, and `Bar` depends on `Foo`.
+
 ## [0.1.4]
 ### Improved
 + unknown options calling with `:[]`, `:[]=` now constrainted without additional check `raise if`

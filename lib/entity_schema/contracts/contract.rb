@@ -83,11 +83,11 @@ module EntitySchema
       end
 
       # rubocop:disable Metrics/LineLength
-      def raise_unexpected_value(rules, key, value) # rubocop:disable Metrics/AbcSize
+      def raise_unexpected_value(rules, key, value)
         msg  = "Unexpected #{key.inspect} value `#{value.inspect}`. \n" \
                '  Expected to:'
         msgs = []
-        msgs << "\n    be equal to the one of: #{rules[:eq]&.map(&:inspect)}" if rules.key?(:eq)
+        msgs << "\n    be equal to: #{rules[:eq]}" if rules.key?(:eq)
         msgs << "\n    be one of: #{rules[:type]}" if rules[:type]
         msgs << "\n    respond to one of the methods: #{rules[:respond_to]}" if rules.key?(:respond_to)
         raise TypeError, (msg + msgs * ' OR')
