@@ -36,7 +36,7 @@ module EntitySchema
         end
 
         def create_observer(fk, object, opts)
-          observer = ObserverBelongsTo.new(fk, object, object_pk: opts[:pk] || :id)
+          observer = ObserverBelongsTo.new(fk, object, object_pk_name: opts[:pk] || :id)
           fk.observer_belongs_to     = observer
           object.observer_belongs_to = observer
         end
