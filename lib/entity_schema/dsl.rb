@@ -55,11 +55,5 @@ module EntitySchema
       setup_field(object)
       setup_field(fk)
     end
-
-    private
-
-    def __merge(opts, other)
-      opts.merge(other) { |_, old, new| new.nil? ? old : new }
-    end
   end
 end

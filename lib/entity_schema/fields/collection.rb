@@ -9,7 +9,7 @@ module EntitySchema
       def set(obj, collection)
         case collection
         when Array, nil then super
-        else raise ArgumentError, 'collection field must be Array'
+        else raise ArgumentError, 'collection field must be an Array'
         end
       end
 
